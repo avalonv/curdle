@@ -103,25 +103,25 @@ def echo_read_string(screen, start_y, start_x) -> str:
 
 def compare_wordle(string) -> tuple:
     # the structure for this is [string literal, [list of ints
-    # referencing an assigned color]].since the same letter can appear
-    # multiple times in a word, we prefer to use the index 'pos' as a key
-    # instead of a real dictionary, where repeated letters would all point
-    # to the same color regardless of location.
+    # referencing an assigned color]]. since the same letter can appear
+    # multiple times in a word, we prefer to use the index i as a key
+    # instead of a real dictionary, where repeated letters would all
+    # point to the same color regardless of location.
     word_dic = string, [0 for c in string] # actually a list >_>
     # this loop compares the chars in 'string' and 'wordle' based on index,
     # and assigns a color to the respective index in the color array. so
     # if string were 'weiss', and wordle were 'white', this function would
     # return something like this: ['weiss', [1,2,1,3,3]]
     # TODO: also set the alphabet colors in this loop
-    for pos in range(len(word_dic[0])):
-            char = word_dic[0][pos]
-            if char == wordle[pos]:
+    for i in range(len(word_dic[0])):
+            char = word_dic[0][i]
+            if char == wordle[i]:
                 color = 1 # green
             elif char in wordle:
                 color = 2 # yellow
             else:
                 color = 3 # grey
-            word_dic[1][pos] = color
+            word_dic[1][i] = color
     return word_dic
 
 
@@ -145,16 +145,16 @@ def display_words(screen, words, start_y, start_x):
     for word in words:
         y += 1
         x = start_x # column/width
-        for pos in range(len(word[0])):
-            char = word[0][pos]
-            color = word[1][pos]
+        for i in range(len(word[0])):
+            char = word[0][i]
+            color = word[1][i]
             print_char(screen, char, y, x, color)
             x += letterspacing + 1
     screen.refresh()
 
 
 def create_score_win():
-    # this also only exists to reduce clutter
+    # this also mostly exists to reduce clutter
     max_y = curses.LINES - 1
     max_x = curses.COLS - 1
     middle_x = round(max_x / 2) + 1
