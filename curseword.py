@@ -38,7 +38,7 @@ def print_char(stdscr, char, y, x, color=0):
     stdscr.addstr(y, x, char.upper(), curses.color_pair(color))
 
 
-def echo_read_string(screen, start_y, start_x) -> str:
+def echo_read_string(screen, start_y, start_x):
     curses.curs_set(True) # turn the cursor on
     # while desirable, in that it sanitizes a bunch of
     # annoying inputs, it also produces strings too long
@@ -101,7 +101,7 @@ def echo_read_string(screen, start_y, start_x) -> str:
     return string
 
 
-def compare_wordle(string) -> tuple:
+def compare_wordle(string):
     # the structure for this is [string literal, [list of ints
     # referencing an assigned color]]. since the same letter can appear
     # multiple times in a word, we prefer to use the index i as a key
@@ -125,7 +125,7 @@ def compare_wordle(string) -> tuple:
     return word_dic
 
 
-def validate_word(screen, string) -> bool:
+def validate_word(screen, string):
     # this actually tests whether input is a valid word, since
     # echo_get_word just sanitizes for random bullshit like numbers
     # TODO: actually print the not in the wordlist message (preferably)
