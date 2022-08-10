@@ -12,7 +12,7 @@ with open('./valid-input-words.txt', newline='') as words_file:
     words = words_file.readlines()
     valid_words = [w.rstrip().lower() for w in words]
 
-wordle = 'dozen'
+wordle = 'weiss'
 words = []
 letterspacing = 2
 max_guesses = 6
@@ -157,10 +157,10 @@ def create_score_win():
     # this also mostly exists to reduce clutter
     max_y = curses.LINES - 1
     max_x = curses.COLS - 1
-    middle_x = round(max_x / 2) + 1
-    score_width = round((len(wordle) * (letterspacing + 1)))
+    middle_x = max_x / 2
+    score_width = len(wordle) * (letterspacing + 1)
     score_height = max_guesses
-    score_start_x = round(middle_x - (score_width / 2))
+    score_start_x = round(middle_x - (score_width / 2)) + 1
     score_start_y = 1
     window = curses.newwin(score_height,
                 score_width, score_start_y,
