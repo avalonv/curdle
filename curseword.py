@@ -12,7 +12,7 @@ with open('./valid-input-words.txt', newline='') as words_file:
     words = words_file.readlines()
     valid_words = [w.rstrip().lower() for w in words]
 
-wordle = 'weiss'
+wordle = 'dozen'
 words = []
 letterspacing = 2
 max_guesses = 6
@@ -25,13 +25,13 @@ def set_colors(inverted=False):
     # so this function's main purpose is uncluttering main
     if not inverted:
         # pair 0 is a constant and always points to the default fg/bg colors
-        curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
+        curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_BLACK)
         curses.init_pair(2, curses.COLOR_YELLOW, curses.COLOR_BLACK)
-        curses.init_pair(3, curses.COLOR_WHITE, curses.COLOR_BLACK) # actually grey
+        curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK) # actually grey
     else:
-        curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_GREEN)
+        curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_GREEN)
         curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_YELLOW)
-        curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
+        curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
 
 
 def print_char(stdscr, char, y, x, color=0):
@@ -116,11 +116,11 @@ def compare_wordle(string):
     for i in range(len(word_dic[0])):
             char = word_dic[0][i]
             if char == wordle[i]:
-                color = 1 # green
+                color = 3 # green
             elif char in wordle:
                 color = 2 # yellow
             else:
-                color = 3 # grey
+                color = 1 # grey
             word_dic[1][i] = color
     return word_dic
 
