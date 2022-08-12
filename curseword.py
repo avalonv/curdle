@@ -1,6 +1,6 @@
 from time import sleep
 from random import choice as random_choice
-import curses
+import curses, curses.textpad
 
 with open('./valid-wordle-words.txt', newline='') as wordle_file:
     w = random_choice(wordle_file.readlines())
@@ -12,6 +12,7 @@ with open('./valid-input-words.txt', newline='') as words_file:
     words = words_file.readlines()
     valid_words = [w.rstrip().lower() for w in words]
 
+max_x = max_y = 0
 wordle = 'dozen'
 letterspacing = 2
 max_guesses = 6
@@ -19,6 +20,7 @@ alphabet = 'qwertyuiopasdfghjklzxcvbnm'
 
 
 def set_colors(inverted=False):
+    curses.use_default_colors() # I think this is important
     # curses.COLOR can only be invoked after stdscr has been created,
     # and ours is wrapped and I'm too lazy to read the documentation,
     # so this function's main purpose is uncluttering main
@@ -154,24 +156,30 @@ def display_words(screen, words, start_y, start_x):
 
 def create_score_win():
     # this also mostly exists to reduce clutter
-    max_y = curses.LINES - 1
-    max_x = curses.COLS - 1
     middle_x = max_x / 2
     score_width = len(wordle) * (letterspacing + 1)
     score_height = max_guesses
-    score_start_x = round(middle_x - (score_width / 2)) + 1
-    score_start_y = 1
-    window = curses.newwin(score_height,
-                score_width, score_start_y,
-                score_start_x)
-    return window
-
+    start_x = round(middle_x - (score_width / 2)) + 1
+    start_y = 1
+    window = curses.newwin(score_height, score_width, start_y, start_x)
+    # this would draw a border around the score itself,
+    # but it's probably not worth the complexity
+    # curses.textpad.rectangle(stdscr, start_y-1, start_x-letterspacing,
+    #                         start_y+max_guesses, start_x+score_width)
+    # stdscr.refresh()
+    return [window]
 
 def game(stdscr):
+    global max_y, max_x
+    max_y = curses.LINES - 1
+    max_x = curses.COLS - 1
     set_colors()
+    windows = create_score_win()
+    scorebox = windows[0]
+    # draw a pretty border
     stdscr.clear()
-    curses.use_default_colors()
-    scorebox = create_score_win()
+    curses.textpad.rectangle(stdscr, 0, 1, max_y, max_x-2)
+    stdscr.refresh()
 
     guessed_words = []
     while len(guessed_words) < max_guesses:
