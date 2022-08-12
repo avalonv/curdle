@@ -12,10 +12,13 @@ with open('./valid-input-words.txt', newline='') as words_file:
     words = words_file.readlines()
     valid_words = [w.rstrip().lower() for w in words]
 
-wordle = 'dozen'
-letterspacing = 2 # changing this might cause some alignment issues
+# values below 1 and above 4 might cause alignment issues due to
+# terrible maths (see initialize_screens)
+spacing = 4
 max_guesses = 6
-kb_colors = {letter : 0 for letter in 'qwertyuiopasdfghjklzxcvbnm'}
+kb_colors = {letter : 0 for letter in 'abcdefghijklmnopqrstuvwxyz'}
+wordle = 'dozen'
+
 
 def set_colors(inverted=False):
     # this might be important on some terminals, not on kitty or konsole
@@ -48,13 +51,13 @@ def echo_read_string(screen, start_y, start_x):
     # for ord(), which might fuck up handling of other keys
     screen.keypad(True) # process special keys as unique strings
     screen.move(start_y, start_x)
-    max_x = len(wordle) * (letterspacing + 1)
+    max_x = len(wordle) * (spacing + 1)
     x = start_x
     string = ''
     i = 0
     # avoid not erasing characters if spacing is 0
-    if letterspacing > 0:
-        blanks = ' ' * letterspacing
+    if spacing > 0:
+        blanks = ' ' * spacing
     else:
         blanks = ' '
 
@@ -70,9 +73,8 @@ def echo_read_string(screen, start_y, start_x):
               or key == '\b'
               or key == '\x7f'
               or key == 'KEY_DC'):
-            # this is kinda complicated, but the TL;DR is x
-            # determines where the input goes, and we use i to keep
-            # track of how many characters were actually typed
+            # TL;DR is x determines where the input goes, and we use
+            # i to keep track of how many characters were actually typed
             # (although in practice you can infer one from the other),
             # when we delete a word (backspace) we reduce i by one
             # and x by the amount of letterspacing plus one, and we
@@ -82,23 +84,23 @@ def echo_read_string(screen, start_y, start_x):
             if i > 0:
                 string = string[:-1]
                 i -= 1
-                x -= letterspacing + 1
+                x -= spacing + 1
                 print_char(screen, blanks, start_y, x, 0)
         elif key.lower() in kb_colors: # ignore things like arrow keys
             if i < len(wordle):
                 string += key
                 i += 1
                 print_char(screen, key.lower(), start_y, x, 0)
-                x += letterspacing + 1
+                x += spacing + 1
         # another thing worthy of mention is that the cursor/caret
-        # is much like a ghost, its position is affected by output
+        # behaves like a ghost, its position is affected by output
         # functions, but it has no bearing where input actually goes.
         # this aligns it with the next input stream so it's prettier,
         # but it's not necessary for the rest to work.
         if not x >= max_x:
             screen.move(start_y, x)
         else:
-            screen.move(start_y, x - letterspacing - 1)
+            screen.move(start_y, x - spacing - 1)
 
     curses.curs_set(False)
     return string
@@ -159,7 +161,7 @@ def display_words(screen, words, start_y, start_x):
             char = word[0][i]
             color = word[1][i]
             print_char(screen, char, y, x, color)
-            x += letterspacing + 1
+            x += spacing + 1
     screen.refresh()
 
 
@@ -188,22 +190,23 @@ def initialize_screens(stdscr, border=True):
     max_x = curses.COLS - 1
     middle_x = max_x / 2
 
-    score_width = len(wordle) * (letterspacing + 1)
+    score_width = len(wordle) * (spacing + 1)
     score_height = max_guesses
     start_x = round(middle_x - (score_width / 2)) + 1
     start_y = 1
     scorewin = curses.newwin(score_height, score_width, start_y, start_x)
 
-    # adjusted to align with middle row of score_win (it's messy)
-    adjst_middle = start_x + round((len(wordle) * letterspacing + 1) / 2) + 2
+    # adjusted x to align with middle row of score_win
+    # don't ask me why it works, I genuinely have no idea
+    adjst_middle = round(middle_x) - spacing + 4
     kb_width = 20
     kb_height = 3
-    kb_start_y = start_y + score_height + 2
+    kb_start_y = start_y + score_height + 1
     kb_start_x = adjst_middle - 10
     kbwin = curses.newwin(kb_height, kb_width, kb_start_y, kb_start_x)
 
     border_start_y = start_y - 1
-    border_start_x = start_x - letterspacing - 8
+    border_start_x = start_x - spacing - 8
     border_end_y = kb_start_y + 4
     border_end_x = start_x + score_width + 7
     if border:
@@ -232,6 +235,7 @@ def game(stdscr):
         display_words(scorewin, guessed_words, 0, 0)
     print('lose')
     sleep(3)
+
 
 if __name__ == '__main__':
     curses.wrapper(game)
