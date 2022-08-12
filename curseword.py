@@ -13,7 +13,6 @@ with open('./valid-input-words.txt', newline='') as words_file:
     valid_words = [w.rstrip().lower() for w in words]
 
 wordle = 'dozen'
-words = []
 letterspacing = 2
 max_guesses = 6
 alphabet = 'qwertyuiopasdfghjklzxcvbnm'
@@ -173,20 +172,19 @@ def game(stdscr):
     stdscr.clear()
     curses.use_default_colors()
     scorebox = create_score_win()
-    guesses = 0
-    while guesses < max_guesses:
-        input_str = echo_read_string(scorebox, guesses, 0)
-        # might be better to move validate_word if displaying warnings
+
+    guessed_words = []
+    while len(guessed_words) < max_guesses:
+        input_str = echo_read_string(scorebox, len(guessed_words), 0)
         if validate_word(scorebox, input_str):
-            current_word = compare_wordle(input_str)
-            words.append(current_word)
-            guesses += 1
-            if current_word[0] == wordle:
-                display_words(scorebox, words, 0, 0)
+            current_guess = compare_wordle(input_str)
+            guessed_words.append(current_guess)
+            if current_guess[0] == wordle:
+                display_words(scorebox, guessed_words, 0, 0)
                 print('win')
                 sleep(3)
                 return
-        display_words(scorebox, words, 0, 0)
+        display_words(scorebox, guessed_words, 0, 0)
     print('lose')
     sleep(3)
 
