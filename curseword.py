@@ -16,8 +16,7 @@ max_x = max_y = 0
 wordle = 'dozen'
 letterspacing = 2
 max_guesses = 6
-alphabet = 'qwertyuiopasdfghjklzxcvbnm'
-
+kb_colors = {letter : 0 for letter in 'qwertyuiopasdfghjklzxcvbnm'}
 
 def set_colors(inverted=False):
     curses.use_default_colors() # I think this is important
@@ -82,7 +81,7 @@ def echo_read_string(screen, start_y, start_x):
                 i -= 1
                 x -= letterspacing + 1
                 print_char(screen, blanks, start_y, x, 0)
-        elif key.lower() in alphabet: # ignore things like arrow keys
+        elif key.lower() in kb_colors: # ignore things like arrow keys
             if i < len(wordle):
                 string += key
                 i += 1
@@ -103,6 +102,7 @@ def echo_read_string(screen, start_y, start_x):
 
 
 def compare_wordle(string):
+    global kb_colors
     # the structure for this is [string literal, [list of ints
     # referencing an assigned color]]. since the same letter can appear
     # multiple times in a word, we prefer to use the index i as a key
@@ -123,6 +123,10 @@ def compare_wordle(string):
             else:
                 color = 1 # grey
             word_dic[1][i] = color
+            # this ensures 'better' colors have priority, i.e.
+            # a previously green letter can't become yellow
+            if kb_colors[char] < color:
+                kb_colors[char] = color
     return word_dic
 
 
@@ -141,6 +145,8 @@ def validate_word(screen, string):
 
 
 def display_words(screen, words, start_y, start_x):
+    # updates score_win with previous guesses as well
+    # as the keyboard
     screen.clear()
     y = start_y - 1 # line/height
     for word in words:
@@ -200,3 +206,4 @@ def game(stdscr):
 # 'ASDFGHJKLK'
 #  'ZXCVBNM'
 curses.wrapper(game)
+print(kb_colors)
