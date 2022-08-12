@@ -12,30 +12,33 @@ with open('./valid-input-words.txt', newline='') as words_file:
     words = words_file.readlines()
     valid_words = [w.rstrip().lower() for w in words]
 
-max_x = max_y = 0
 wordle = 'dozen'
-letterspacing = 2
+letterspacing = 2 # changing this might cause some alignment issues
 max_guesses = 6
 kb_colors = {letter : 0 for letter in 'qwertyuiopasdfghjklzxcvbnm'}
 
 def set_colors(inverted=False):
-    curses.use_default_colors() # I think this is important
+    # this might be important on some terminals, not on kitty or konsole
+    curses.use_default_colors()
     # curses.COLOR can only be invoked after stdscr has been created,
     # and ours is wrapped and I'm too lazy to read the documentation,
     # so this function's main purpose is uncluttering main
     if not inverted:
         # pair 0 is a constant and always points to the default fg/bg colors
+        # related: on most systems I tested COLOR_BACK is actually grey
         curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_BLACK)
         curses.init_pair(2, curses.COLOR_YELLOW, curses.COLOR_BLACK)
-        curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK) # actually grey
+        curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
     else:
         curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_GREEN)
         curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_YELLOW)
         curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
 
 
-def print_char(stdscr, char, y, x, color=0):
-    stdscr.addstr(y, x, char.upper(), curses.color_pair(color))
+def print_char(stdscr, char, y, x, color=0, uppercase=True):
+    if uppercase:
+        char = char.upper()
+    stdscr.addstr(y, x, char, curses.color_pair(color))
 
 
 def echo_read_string(screen, start_y, start_x):
@@ -130,7 +133,7 @@ def compare_wordle(string):
     return word_dic
 
 
-def validate_word(screen, string):
+def validate_input(screen, string):
     # this actually tests whether input is a valid word, since
     # echo_get_word just sanitizes for random bullshit like numbers
     # TODO: actually print the not in the wordlist message (preferably)
@@ -160,50 +163,75 @@ def display_words(screen, words, start_y, start_x):
     screen.refresh()
 
 
-def create_score_win():
-    # this also mostly exists to reduce clutter
+def display_kb(screen):
+    screen.clear()
+    y = 0
+    for row in 'qwertyuio', 'asdfghjkl', '  zxcvbnm':
+        x = 0
+        for char in row:
+            try:
+                color = kb_colors[char]
+            except KeyError:
+                print_char(screen, char, y, x)
+                x += 1
+                continue
+            print_char(screen, char, y, x, color, False)
+            x += 2
+        y += 1
+    screen.refresh()
+
+
+def initialize_screens(stdscr, border=True):
+    # a whole nightmare in the palm of your hand!
+    global scorewin, kbwin
+    max_y = curses.LINES - 1
+    max_x = curses.COLS - 1
     middle_x = max_x / 2
+
     score_width = len(wordle) * (letterspacing + 1)
     score_height = max_guesses
     start_x = round(middle_x - (score_width / 2)) + 1
     start_y = 1
-    window = curses.newwin(score_height, score_width, start_y, start_x)
-    # this would draw a border around the score itself,
-    # but it's probably not worth the complexity
-    # curses.textpad.rectangle(stdscr, start_y-1, start_x-letterspacing,
-    #                         start_y+max_guesses, start_x+score_width)
-    # stdscr.refresh()
-    return [window]
+    scorewin = curses.newwin(score_height, score_width, start_y, start_x)
+
+    # adjusted to align with middle row of score_win (it's messy)
+    adjst_middle = start_x + round((len(wordle) * letterspacing + 1) / 2) + 2
+    kb_width = 20
+    kb_height = 3
+    kb_start_y = start_y + score_height + 2
+    kb_start_x = adjst_middle - 10
+    kbwin = curses.newwin(kb_height, kb_width, kb_start_y, kb_start_x)
+
+    border_start_y = start_y - 1
+    border_start_x = start_x - letterspacing - 8
+    border_end_y = kb_start_y + 4
+    border_end_x = start_x + score_width + 7
+    if border:
+        curses.textpad.rectangle(stdscr, border_start_y,
+            border_start_x, border_end_y, border_end_x)
+        stdscr.refresh()
+
 
 def game(stdscr):
-    global max_y, max_x
-    max_y = curses.LINES - 1
-    max_x = curses.COLS - 1
     set_colors()
-    windows = create_score_win()
-    scorebox = windows[0]
-    # draw a pretty border
-    stdscr.clear()
-    curses.textpad.rectangle(stdscr, 0, 1, max_y, max_x-2)
-    stdscr.refresh()
+    initialize_screens(stdscr)
 
     guessed_words = []
     while len(guessed_words) < max_guesses:
-        input_str = echo_read_string(scorebox, len(guessed_words), 0)
-        if validate_word(scorebox, input_str):
+        input_str = echo_read_string(scorewin, len(guessed_words), 0)
+        if validate_input(scorewin, input_str):
             current_guess = compare_wordle(input_str)
             guessed_words.append(current_guess)
             if current_guess[0] == wordle:
-                display_words(scorebox, guessed_words, 0, 0)
+                display_kb(kbwin)
+                display_words(scorewin, guessed_words, 0, 0)
                 print('win')
                 sleep(3)
                 return
-        display_words(scorebox, guessed_words, 0, 0)
+        display_kb(kbwin)
+        display_words(scorewin, guessed_words, 0, 0)
     print('lose')
     sleep(3)
 
-# 'QWERTYUIOP'
-# 'ASDFGHJKLK'
-#  'ZXCVBNM'
-curses.wrapper(game)
-print(kb_colors)
+if __name__ == '__main__':
+    curses.wrapper(game)
