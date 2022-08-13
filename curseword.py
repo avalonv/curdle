@@ -16,7 +16,7 @@ with open('./valid-input-words.txt', newline='') as words_file:
 # max space between letters, actual space depends on screen size
 spacing = 3
 max_guesses = 6
-kb_colors = {letter : 0 for letter in 'abcdefghijklmnopqrstuvwxyz'}
+kb_dict = {letter : 0 for letter in 'abcdefghijklmnopqrstuvwxyz'}
 wordle = 'dozen'
 
 
@@ -51,7 +51,7 @@ def display_kb(screen):
         x = 0
         for char in row:
             try:
-                color = kb_colors[char]
+                color = kb_dict[char]
             except KeyError: # spaces make it pissy
                 prt_color_char(screen, char, y, x)
                 x += 1
@@ -106,7 +106,7 @@ def echo_read_string(screen, start_y, start_x):
                 i -= 1
                 x -= spacing + 1
                 prt_color_char(screen, blanks, start_y, x, 0)
-        elif key.lower() in kb_colors: # ignore things like arrow keys
+        elif key.lower() in kb_dict: # ignore things like arrow keys
             if i < len(wordle):
                 string += key
                 i += 1
@@ -138,7 +138,7 @@ def validate_input(string):
 
 
 def compare_wordle(string):
-    global kb_colors
+    global kb_dict
     # this loop compares the chars in 'string' and 'wordle' based on index,
     # and assigns a color to the respective index in the color array. so
     # if string were 'weiss', and wordle were 'white', this function would
@@ -160,8 +160,8 @@ def compare_wordle(string):
             word_dic[1][i] = color
             # this ensures 'better' colors have priority, i.e.
             # a previously green letter can't become yellow
-            if kb_colors[char] < color:
-                kb_colors[char] = color
+            if kb_dict[char] < color:
+                kb_dict[char] = color
     return word_dic
 
 
