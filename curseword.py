@@ -198,14 +198,14 @@ def set_win_geometry(stdscr, border=True):
     scorewin = curses.newwin(score_height, score_width, start_y, start_x)
 
     msg_width = 20
-    msg_height = 1
-    msg_start_y = start_y + score_height + 1
+    msg_height = 2
+    msg_start_y = start_y + score_height
     msg_start_x = middle_x - 8
     msgwin = curses.newwin(msg_height, msg_width, msg_start_y, msg_start_x)
 
     kb_width = 20
     kb_height = 3
-    kb_start_y = msg_start_y + 1
+    kb_start_y = msg_start_y + msg_height
     kb_start_x = middle_x - 8
     kbwin = curses.newwin(kb_height, kb_width, kb_start_y, kb_start_x)
 
@@ -263,17 +263,19 @@ def game(stdscr):
             if current_guess[0] == wordle:
                 display_kb(kbwin)
                 display_words(scorewin, guessed_words)
-                msgwin.addstr(0, 5, 'You win!', curses.color_pair(3))
+                msgwin.addstr(0, 5, f'You win!', curses.color_pair(3))
+                msgwin.addstr(1, 3, f'Score: {len(guessed_words)}/{max_guesses}', curses.color_pair(3))
                 msgwin.refresh()
-                sleep(6)
+                sleep(7)
                 return 0
         else:
-            msgwin.addstr(0, 0, 'Word not in list.', curses.color_pair(1))
+            msgwin.addstr(1, 0, 'Word not in list.', curses.color_pair(1))
             msgwin.refresh()
 
         display_kb(kbwin)
         display_words(scorewin, guessed_words)
     msgwin.addstr(0, 4, 'You lose!', curses.color_pair(2))
+    msgwin.addstr(1, 3, f'word: {wordle}', curses.color_pair(2))
     msgwin.refresh()
     sleep(5)
     return 1
