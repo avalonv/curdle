@@ -38,11 +38,11 @@ def set_colors(inverted=False):
         curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
 
 
-def print_str(stdscr, string, y, x, color=0):
+def color_string(stdscr, string, y, x, color=0):
     stdscr.addstr(y, x, string, curses.color_pair(color))
 
 
-def print_char(stdscr, char, y, x, color=0, uppercase=True):
+def color_char(stdscr, char, y, x, color=0, uppercase=True):
     if uppercase:
         char = char.upper()
     stdscr.addstr(y, x, char, curses.color_pair(color))
@@ -89,12 +89,12 @@ def echo_read_string(screen, start_y, start_x):
                 string = string[:-1]
                 i -= 1
                 x -= spacing + 1
-                print_char(screen, blanks, start_y, x, 0)
+                color_char(screen, blanks, start_y, x, 0)
         elif key.lower() in kb_colors: # ignore things like arrow keys
             if i < len(wordle):
                 string += key
                 i += 1
-                print_char(screen, key.lower(), start_y, x, 0)
+                color_char(screen, key.lower(), start_y, x, 0)
                 x += spacing + 1
         # another thing worthy of mention is that the cursor/caret
         # behaves like a ghost, its position is affected by output
@@ -161,7 +161,7 @@ def display_words(screen, words):
         for i in range(len(word[0])):
             char = word[0][i]
             color = word[1][i]
-            print_char(screen, char, y, x, color)
+            color_char(screen, char, y, x, color)
             x += spacing + 1
     screen.refresh()
 
@@ -175,16 +175,16 @@ def display_kb(screen):
             try:
                 color = kb_colors[char]
             except KeyError:
-                print_char(screen, char, y, x)
+                color_char(screen, char, y, x)
                 x += 1
                 continue
-            print_char(screen, char, y, x, color, False)
+            color_char(screen, char, y, x, color, False)
             x += 2
         y += 1
     screen.refresh()
 
 
-def set_win_geometry(stdscr, border=True):
+def assign_win_geometry(stdscr, border=True):
     # a whole nightmare in the palm of your hand!
     global scorewin, msgwin, kbwin
     max_y = curses.LINES - 1
@@ -225,7 +225,7 @@ def set_win_geometry(stdscr, border=True):
     stdscr.refresh()
 
 
-def create_display(stdscr):
+def iniatiate_screen(stdscr):
     global spacing
     set_colors()
     # this will catch the very useful and informative 'curses.error'
@@ -237,7 +237,7 @@ def create_display(stdscr):
     while True:
         if spacing >= 1:
             try:
-                set_win_geometry(stdscr)
+                assign_win_geometry(stdscr)
                 break
             except curses.error:
                 spacing -= 1
@@ -245,13 +245,13 @@ def create_display(stdscr):
             raise OverflowError
 
 
-def end_score(win:bool, score=max_guesses):
+def show_end_score(win:bool, score=max_guesses):
     if win:
-        print_str(msgwin, f'You win!', 0, 5, 3)
-        print_str(msgwin, f'Score: {score}/{max_guesses}', 1, 3, 3)
+        color_string(msgwin, f'You win!', 0, 5, 3)
+        color_string(msgwin, f'Score: {score}/{max_guesses}', 1, 3, 3)
     else:
-        print_str(msgwin, f'You lose!', 0, 4, 2)
-        print_str(msgwin, f'word: {wordle}', 1, 3, 2)
+        color_string(msgwin, f'You lose!', 0, 4, 2)
+        color_string(msgwin, f'word: {wordle}', 1, 3, 2)
     msgwin.refresh()
     msgwin.getkey()
     sleep(2)
@@ -259,7 +259,7 @@ def end_score(win:bool, score=max_guesses):
 
 
 def game(stdscr):
-    create_display(stdscr)
+    iniatiate_screen(stdscr)
 
     guessed_words = []
     while len(guessed_words) < max_guesses:
@@ -273,14 +273,14 @@ def game(stdscr):
             if current_guess[0] == wordle:
                 display_kb(kbwin)
                 display_words(scorewin, guessed_words)
-                return end_score(win=True, score=len(guessed_words))
+                return show_end_score(win=True, score=len(guessed_words))
         else:
-            print_str(msgwin, f'Word not in list.', 1, 0, 1)
+            color_string(msgwin, f'Word not in list.', 1, 0, 1)
             msgwin.refresh()
-
         display_kb(kbwin)
         display_words(scorewin, guessed_words)
-    return end_score(win=False)
+
+    return show_end_score(win=False)
 
 
 if __name__ == '__main__':
