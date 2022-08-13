@@ -188,21 +188,20 @@ def initialize_screens(stdscr, border=True):
     global scorewin, kbwin
     max_y = curses.LINES - 1
     max_x = curses.COLS - 1
-    middle_x = max_x / 2
+    middle_x = round(max_x / 2)
 
     score_width = len(wordle) * (spacing + 1)
     score_height = max_guesses
-    start_x = round(middle_x - (score_width / 2)) + 1
+    # try to align text with the middle of the screen
+    # don't ask me why it works, I genuinely have no idea
+    start_x =  round(middle_x - score_width / 2 + (spacing - 1) / 2 + 1)
     start_y = 1
     scorewin = curses.newwin(score_height, score_width, start_y, start_x)
 
-    # adjusted x to align with middle row of score_win
-    # don't ask me why it works, I genuinely have no idea
-    adjst_middle = round(middle_x) - spacing + 4
     kb_width = 20
     kb_height = 3
     kb_start_y = start_y + score_height + 1
-    kb_start_x = adjst_middle - 10
+    kb_start_x = middle_x - 8
     kbwin = curses.newwin(kb_height, kb_width, kb_start_y, kb_start_x)
 
     border_start_y = start_y - 1
