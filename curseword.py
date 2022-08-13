@@ -38,6 +38,10 @@ def set_colors(inverted=False):
         curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
 
 
+def print_str(stdscr, string, y, x, color=0):
+    stdscr.addstr(y, x, string, curses.color_pair(color))
+
+
 def print_char(stdscr, char, y, x, color=0, uppercase=True):
     if uppercase:
         char = char.upper()
@@ -263,21 +267,24 @@ def game(stdscr):
             if current_guess[0] == wordle:
                 display_kb(kbwin)
                 display_words(scorewin, guessed_words)
-                msgwin.addstr(0, 5, f'You win!', curses.color_pair(3))
-                msgwin.addstr(1, 3, f'Score: {len(guessed_words)}/{max_guesses}', curses.color_pair(3))
+                print_str(msgwin, f'You win!', 0, 5, 3)
+                print_str(msgwin, f'Score: {len(guessed_words)}/{max_guesses}',
+                        1, 3, 3)
                 msgwin.refresh()
-                sleep(7)
+                sleep(1)
+                stdscr.getkey()
                 return 0
         else:
-            msgwin.addstr(1, 0, 'Word not in list.', curses.color_pair(1))
+            print_str(msgwin, f'Word not in list.', 1, 0, 1)
             msgwin.refresh()
 
         display_kb(kbwin)
         display_words(scorewin, guessed_words)
-    msgwin.addstr(0, 4, 'You lose!', curses.color_pair(2))
-    msgwin.addstr(1, 3, f'word: {wordle}', curses.color_pair(2))
+    print_str(msgwin, f'You lose!', 0, 4, 2)
+    print_str(msgwin, f'word: {wordle}', 1, 3, 2)
     msgwin.refresh()
-    sleep(5)
+    sleep(3)
+    stdscr.getkey()
     return 1
 
 
