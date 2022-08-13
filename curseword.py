@@ -242,7 +242,7 @@ def game(stdscr):
         stdscr.clear()
         print("Couldn't start display, most likely your window is too small")
         stdscr.getkey()
-        return 1
+        return 2
 
     guessed_words = []
     while len(guessed_words) < max_guesses:
@@ -253,13 +253,14 @@ def game(stdscr):
             if current_guess[0] == wordle:
                 display_kb(kbwin)
                 display_words(scorewin, guessed_words)
-                print('win')
+                print('\nwin')
                 sleep(3)
-                return
+                return 0
         display_kb(kbwin)
         display_words(scorewin, guessed_words)
-    print('lose')
+    print('\nlose')
     sleep(3)
+    return 1
 
 
 if __name__ == '__main__':
