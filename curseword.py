@@ -249,13 +249,7 @@ def refresh_all():
     kbwin.refresh()
 
 def game(stdscr):
-    try:
-        create_display(stdscr)
-    except ValueError:
-        stdscr.clear()
-        print("Couldn't start display, most likely your window is too small")
-        stdscr.getkey()
-        return 2
+    create_display(stdscr)
 
     guessed_words = []
     while len(guessed_words) < max_guesses:
@@ -286,4 +280,10 @@ def game(stdscr):
 
 
 if __name__ == '__main__':
-    curses.wrapper(game)
+    try:
+        exit(curses.wrapper(game))
+    except KeyboardInterrupt:
+        exit(2)
+    except ValueError:
+        print("Couldn't start display, most likely your window is too small")
+        exit(3)
