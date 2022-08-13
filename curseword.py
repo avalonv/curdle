@@ -141,8 +141,6 @@ def compare_wordle(string):
 def validate_input(screen, string):
     # this actually tests whether input is a valid word, since
     # echo_get_word just sanitizes for random bullshit like numbers
-    # TODO: actually print the not in the wordlist message (preferably)
-    # in a different window
     if len(string) != len(wordle):
         return False
     elif string not in valid_words:
@@ -235,7 +233,7 @@ def create_display(stdscr):
     # screen, and reduce the spacing between chars (and thus size
     # of the window) until it fits. it will also catch other,
     # equally helpful errors, with equally informative names,
-    # so it's best to call set_win_geometry directly for debugging
+    # so it's best to call set_win_geometry directly if debugging
     while True:
         if spacing >= 1:
             try:
@@ -244,7 +242,7 @@ def create_display(stdscr):
             except curses.error:
                 spacing -= 1
         else:
-            raise ValueError
+            raise OverflowError
 
 
 def end_score(win:bool, score=max_guesses):
@@ -290,6 +288,6 @@ if __name__ == '__main__':
         exit(not curses.wrapper(game)) # flip boolean for good exit
     except KeyboardInterrupt:
         exit(2)
-    except ValueError:
+    except OverflowError:
         print("Couldn't start display, most likely your window is too small")
         exit(3)
