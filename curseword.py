@@ -20,24 +20,6 @@ kb_colors = {letter : 0 for letter in 'abcdefghijklmnopqrstuvwxyz'}
 wordle = 'dozen'
 
 
-def set_colors(inverted=False):
-    # this might be important on some terminals, not on kitty or konsole
-    curses.use_default_colors()
-    # curses.COLOR can only be invoked after stdscr has been created,
-    # and ours is wrapped and I'm too lazy to read the documentation,
-    # so this function's main purpose is uncluttering main
-    if not inverted:
-        # pair 0 is a constant and always points to the default fg/bg colors
-        # related: on most systems I tested COLOR_BACK is actually grey
-        curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_BLACK)
-        curses.init_pair(2, curses.COLOR_YELLOW, curses.COLOR_BLACK)
-        curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
-    else:
-        curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_GREEN)
-        curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_YELLOW)
-        curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
-
-
 def prt_color_str(stdscr, string, y, x, color=0):
     stdscr.addstr(y, x, string, curses.color_pair(color))
 
@@ -48,7 +30,41 @@ def prt_color_char(stdscr, char, y, x, color=0, uppercase=True):
     stdscr.addstr(y, x, char, curses.color_pair(color))
 
 
+def display_words(screen, words):
+    screen.clear()
+    y = -1
+    for word in words:
+        y += 1
+        x = 0
+        for i in range(len(word[0])):
+            char = word[0][i]
+            color = word[1][i]
+            prt_color_char(screen, char, y, x, color)
+            x += spacing + 1
+    screen.refresh()
+
+
+def display_kb(screen):
+    screen.clear()
+    y = 0
+    for row in 'qwertyuio', 'asdfghjkl', '  zxcvbnm':
+        x = 0
+        for char in row:
+            try:
+                color = kb_colors[char]
+            except KeyError: # spaces make it pissy
+                prt_color_char(screen, char, y, x)
+                x += 1
+                continue
+            prt_color_char(screen, char, y, x, color, False)
+            x += 2
+        y += 1
+    screen.refresh()
+
+
 def echo_read_string(screen, start_y, start_x):
+    # reads raw input from the user, and echoes what it receives.
+    # does no validation whatsoever except check if it's a letter
     curses.curs_set(True) # turn the cursor on
     # while desirable, in that it sanitizes a bunch of
     # annoying inputs, it also produces strings too long
@@ -110,18 +126,29 @@ def echo_read_string(screen, start_y, start_x):
     return string
 
 
+def validate_input(string):
+    # this actually tests whether the string from echo_read_string is a valid
+    # word, since the former just sanitizes for random bullshit like numbers
+    if len(string) != len(wordle):
+        return False
+    elif string not in valid_words:
+        return False
+    else:
+        return True
+
+
 def compare_wordle(string):
     global kb_colors
+    # this loop compares the chars in 'string' and 'wordle' based on index,
+    # and assigns a color to the respective index in the color array. so
+    # if string were 'weiss', and wordle were 'white', this function would
+    # return something like this: ['weiss', [1,2,1,3,3]].
     # the structure for this is [string literal, [list of ints
     # referencing an assigned color]]. since the same letter can appear
     # multiple times in a word, we prefer to use the index i as a key
     # instead of a real dictionary, where repeated letters would all
     # point to the same color regardless of location.
     word_dic = string, [0 for c in string] # actually a list >_>
-    # this loop compares the chars in 'string' and 'wordle' based on index,
-    # and assigns a color to the respective index in the color array. so
-    # if string were 'weiss', and wordle were 'white', this function would
-    # return something like this: ['weiss', [1,2,1,3,3]]
     for i in range(len(word_dic[0])):
             char = word_dic[0][i]
             if char == wordle[i]:
@@ -138,50 +165,22 @@ def compare_wordle(string):
     return word_dic
 
 
-def validate_input(string):
-    # this actually tests whether input is a valid word, since
-    # echo_get_word just sanitizes for random bullshit like numbers
-    if len(string) != len(wordle):
-        return False
-    elif string not in valid_words:
-        # print(f"Not in the wordlist")
-        return False
+def set_colors(inverted=False):
+    # this might be important on some terminals, not on kitty or konsole
+    curses.use_default_colors()
+    # curses.COLOR can only be invoked after stdscr has been created,
+    # and ours is wrapped and I'm too lazy to read the documentation,
+    # so this function's main purpose is uncluttering main
+    if not inverted:
+        # pair 0 is a constant and always points to the default fg/bg colors
+        # related: on most systems I tested COLOR_BACK is actually grey
+        curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_BLACK)
+        curses.init_pair(2, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+        curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
     else:
-        return True
-
-
-def display_words(screen, words):
-    # updates score_win with previous guesses as well
-    # as the keyboard
-    screen.clear()
-    y = -1 # line/height
-    for word in words:
-        y += 1
-        x = 0 # column/width
-        for i in range(len(word[0])):
-            char = word[0][i]
-            color = word[1][i]
-            prt_color_char(screen, char, y, x, color)
-            x += spacing + 1
-    screen.refresh()
-
-
-def display_kb(screen):
-    screen.clear()
-    y = 0
-    for row in 'qwertyuio', 'asdfghjkl', '  zxcvbnm':
-        x = 0
-        for char in row:
-            try:
-                color = kb_colors[char]
-            except KeyError:
-                prt_color_char(screen, char, y, x)
-                x += 1
-                continue
-            prt_color_char(screen, char, y, x, color, False)
-            x += 2
-        y += 1
-    screen.refresh()
+        curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_GREEN)
+        curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_YELLOW)
+        curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
 
 
 def assign_win_geometry(stdscr, border=True):
@@ -286,7 +285,7 @@ def game(stdscr):
 
 if __name__ == '__main__':
     try:
-        exit(curses.wrapper(game)) # flip boolean for good exit
+        exit(curses.wrapper(game))
     except KeyboardInterrupt:
         exit(2)
     except OverflowError:
