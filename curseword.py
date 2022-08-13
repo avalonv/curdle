@@ -38,11 +38,11 @@ def set_colors(inverted=False):
         curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
 
 
-def color_string(stdscr, string, y, x, color=0):
+def prt_color_str(stdscr, string, y, x, color=0):
     stdscr.addstr(y, x, string, curses.color_pair(color))
 
 
-def color_char(stdscr, char, y, x, color=0, uppercase=True):
+def prt_color_char(stdscr, char, y, x, color=0, uppercase=True):
     if uppercase:
         char = char.upper()
     stdscr.addstr(y, x, char, curses.color_pair(color))
@@ -89,12 +89,12 @@ def echo_read_string(screen, start_y, start_x):
                 string = string[:-1]
                 i -= 1
                 x -= spacing + 1
-                color_char(screen, blanks, start_y, x, 0)
+                prt_color_char(screen, blanks, start_y, x, 0)
         elif key.lower() in kb_colors: # ignore things like arrow keys
             if i < len(wordle):
                 string += key
                 i += 1
-                color_char(screen, key.lower(), start_y, x, 0)
+                prt_color_char(screen, key.lower(), start_y, x, 0)
                 x += spacing + 1
         # another thing worthy of mention is that the cursor/caret
         # behaves like a ghost, its position is affected by output
@@ -161,7 +161,7 @@ def display_words(screen, words):
         for i in range(len(word[0])):
             char = word[0][i]
             color = word[1][i]
-            color_char(screen, char, y, x, color)
+            prt_color_char(screen, char, y, x, color)
             x += spacing + 1
     screen.refresh()
 
@@ -175,10 +175,10 @@ def display_kb(screen):
             try:
                 color = kb_colors[char]
             except KeyError:
-                color_char(screen, char, y, x)
+                prt_color_char(screen, char, y, x)
                 x += 1
                 continue
-            color_char(screen, char, y, x, color, False)
+            prt_color_char(screen, char, y, x, color, False)
             x += 2
         y += 1
     screen.refresh()
@@ -247,11 +247,11 @@ def iniatiate_screen(stdscr):
 
 def show_end_score(win:bool, score=max_guesses):
     if win:
-        color_string(msgwin, f'You win!', 0, 5, 3)
-        color_string(msgwin, f'Score: {score}/{max_guesses}', 1, 3, 3)
+        prt_color_str(msgwin, f'You win!', 0, 5, 3)
+        prt_color_str(msgwin, f'Score: {score}/{max_guesses}', 1, 3, 3)
     else:
-        color_string(msgwin, f'You lose!', 0, 4, 2)
-        color_string(msgwin, f'word: {wordle}', 1, 3, 2)
+        prt_color_str(msgwin, f'You lose!', 0, 4, 2)
+        prt_color_str(msgwin, f'word: {wordle}', 1, 3, 2)
     msgwin.refresh()
     msgwin.getkey()
     sleep(2)
@@ -275,7 +275,7 @@ def game(stdscr):
                 show_end_score(win=True, score=len(guessed_words))
                 return 0
         else:
-            color_string(msgwin, f'Word not in list.', 1, 0, 1)
+            prt_color_str(msgwin, f'Word not in list.', 1, 0, 1)
             msgwin.refresh()
         display_kb(kbwin)
         display_words(scorewin, guessed_words)
