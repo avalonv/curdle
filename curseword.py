@@ -12,9 +12,8 @@ with open('./valid-input-words.txt', newline='') as words_file:
     words = words_file.readlines()
     valid_words = [w.rstrip().lower() for w in words]
 
-# values below 1 and above 4 might cause alignment issues due to
-# terrible maths (see initialize_screens)
-spacing = 4
+# max space between letters, actual space depends on screen size
+spacing = 3
 max_guesses = 6
 kb_colors = {letter : 0 for letter in 'abcdefghijklmnopqrstuvwxyz'}
 wordle = 'dozen'
@@ -183,7 +182,7 @@ def display_kb(screen):
     screen.refresh()
 
 
-def initialize_screens(stdscr, border=True):
+def set_win_geometry(stdscr, border=True):
     # a whole nightmare in the palm of your hand!
     global scorewin, kbwin
     max_y = curses.LINES - 1
@@ -204,19 +203,47 @@ def initialize_screens(stdscr, border=True):
     kb_start_x = middle_x - 8
     kbwin = curses.newwin(kb_height, kb_width, kb_start_y, kb_start_x)
 
-    border_start_y = start_y - 1
-    border_start_x = start_x - spacing - 8
-    border_end_y = kb_start_y + 4
-    border_end_x = start_x + score_width + 7
     if border:
+        border_start_y = start_y - 1
+        border_start_x = start_x - spacing - 8
+        border_end_y = kb_start_y + 4
+        border_end_x = start_x + score_width + 7
+        # this is relevant for the resizing loop, should
+        # the border be drawn twice for whatever reason
+        stdscr.clear()
         curses.textpad.rectangle(stdscr, border_start_y,
             border_start_x, border_end_y, border_end_x)
         stdscr.refresh()
 
 
-def game(stdscr):
+def create_display(stdscr):
+    global spacing
     set_colors()
-    initialize_screens(stdscr)
+    # this will catch the very useful and informative 'curses.error'
+    # when foolishly attempting to create windows larger than the
+    # screen, and reduce the spacing between chars (and thus size
+    # of the window) until it fits. it will also catch other,
+    # equally helpful errors, with equally informative names,
+    # so it's best to call set_win_geometry directly for debugging
+    while True:
+        if spacing >= 1:
+            try:
+                set_win_geometry(stdscr)
+                break
+            except curses.error:
+                spacing -= 1
+        else:
+            raise ValueError
+
+
+def game(stdscr):
+    try:
+        create_display(stdscr)
+    except ValueError:
+        stdscr.clear()
+        print("Couldn't start display, most likely your window is too small")
+        stdscr.getkey()
+        return 1
 
     guessed_words = []
     while len(guessed_words) < max_guesses:
