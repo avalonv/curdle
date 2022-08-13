@@ -1,3 +1,4 @@
+from sys import exit
 from time import sleep
 from random import choice as random_choice
 import curses, curses.textpad
@@ -183,7 +184,7 @@ def display_kb(screen):
 
 def set_win_geometry(stdscr, border=True):
     # a whole nightmare in the palm of your hand!
-    global scorewin, kbwin
+    global scorewin, msgwin, kbwin
     max_y = curses.LINES - 1
     max_x = curses.COLS - 1
     middle_x = round(max_x / 2)
@@ -193,26 +194,33 @@ def set_win_geometry(stdscr, border=True):
     # try to align text with the middle of the screen
     # don't ask me why it works, I genuinely have no idea
     start_x =  round(middle_x - score_width / 2 + (spacing - 1) / 2 + 1)
-    start_y = 1
+    start_y = 2
     scorewin = curses.newwin(score_height, score_width, start_y, start_x)
+
+    msg_width = 20
+    msg_height = 1
+    msg_start_y = start_y + score_height + 1
+    msg_start_x = middle_x - 8
+    msgwin = curses.newwin(msg_height, msg_width, msg_start_y, msg_start_x)
 
     kb_width = 20
     kb_height = 3
-    kb_start_y = start_y + score_height + 1
+    kb_start_y = msg_start_y + 1
     kb_start_x = middle_x - 8
     kbwin = curses.newwin(kb_height, kb_width, kb_start_y, kb_start_x)
 
     if border:
-        border_start_y = start_y - 1
+        border_start_y = 0
         border_start_x = start_x - spacing - 8
-        border_end_y = kb_start_y + 4
+        border_end_y = kb_start_y + kb_height + 1
         border_end_x = start_x + score_width + 7
         # this is relevant for the resizing loop, should
         # the border be drawn twice for whatever reason
         stdscr.clear()
         curses.textpad.rectangle(stdscr, border_start_y,
             border_start_x, border_end_y, border_end_x)
-        stdscr.refresh()
+    stdscr.addstr(0, middle_x-5, '  wordle  ', curses.color_pair(0))
+    stdscr.refresh()
 
 
 def create_display(stdscr):
@@ -235,6 +243,11 @@ def create_display(stdscr):
             raise ValueError
 
 
+def refresh_all():
+    scorewin.refresh()
+    msgwin.refresh()
+    kbwin.refresh()
+
 def game(stdscr):
     try:
         create_display(stdscr)
@@ -250,16 +263,25 @@ def game(stdscr):
         if validate_input(scorewin, input_str):
             current_guess = compare_wordle(input_str)
             guessed_words.append(current_guess)
+            scorewin.refresh()
+            msgwin.clear()
+            msgwin.refresh()
             if current_guess[0] == wordle:
                 display_kb(kbwin)
                 display_words(scorewin, guessed_words)
-                print('\nwin')
-                sleep(3)
+                msgwin.addstr(0, 5, 'You win!', curses.color_pair(3))
+                msgwin.refresh()
+                sleep(6)
                 return 0
+        else:
+            msgwin.addstr(0, 0, 'Word not in list.', curses.color_pair(1))
+            msgwin.refresh()
+
         display_kb(kbwin)
         display_words(scorewin, guessed_words)
-    print('\nlose')
-    sleep(3)
+    msgwin.addstr(0, 4, 'You lose!', curses.color_pair(2))
+    msgwin.refresh()
+    sleep(5)
     return 1
 
 
