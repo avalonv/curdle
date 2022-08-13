@@ -255,7 +255,6 @@ def show_end_score(win:bool, score=max_guesses):
     msgwin.refresh()
     msgwin.getkey()
     sleep(2)
-    return win
 
 
 def game(stdscr):
@@ -273,19 +272,21 @@ def game(stdscr):
             if current_guess[0] == wordle:
                 display_kb(kbwin)
                 display_words(scorewin, guessed_words)
-                return show_end_score(win=True, score=len(guessed_words))
+                show_end_score(win=True, score=len(guessed_words))
+                return 0
         else:
             color_string(msgwin, f'Word not in list.', 1, 0, 1)
             msgwin.refresh()
         display_kb(kbwin)
         display_words(scorewin, guessed_words)
 
-    return show_end_score(win=False)
+    show_end_score(win=False)
+    return 1
 
 
 if __name__ == '__main__':
     try:
-        exit(not curses.wrapper(game)) # flip boolean for good exit
+        exit(curses.wrapper(game)) # flip boolean for good exit
     except KeyboardInterrupt:
         exit(2)
     except OverflowError:
