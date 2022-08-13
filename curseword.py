@@ -138,7 +138,7 @@ def compare_wordle(string):
     return word_dic
 
 
-def validate_input(screen, string):
+def validate_input(string):
     # this actually tests whether input is a valid word, since
     # echo_get_word just sanitizes for random bullshit like numbers
     if len(string) != len(wordle):
@@ -264,7 +264,7 @@ def game(stdscr):
     guessed_words = []
     while len(guessed_words) < max_guesses:
         input_str = echo_read_string(scorewin, len(guessed_words), 0)
-        if validate_input(scorewin, input_str):
+        if validate_input(input_str):
             current_guess = compare_wordle(input_str)
             guessed_words.append(current_guess)
             scorewin.refresh()
