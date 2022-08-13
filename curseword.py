@@ -247,10 +247,18 @@ def create_display(stdscr):
             raise ValueError
 
 
-def refresh_all():
-    scorewin.refresh()
+def end_score(win:bool, score=max_guesses):
+    if win:
+        print_str(msgwin, f'You win!', 0, 5, 3)
+        print_str(msgwin, f'Score: {score}/{max_guesses}', 1, 3, 3)
+    else:
+        print_str(msgwin, f'You lose!', 0, 4, 2)
+        print_str(msgwin, f'word: {wordle}', 1, 3, 2)
     msgwin.refresh()
-    kbwin.refresh()
+    msgwin.getkey()
+    sleep(2)
+    return win
+
 
 def game(stdscr):
     create_display(stdscr)
@@ -267,30 +275,19 @@ def game(stdscr):
             if current_guess[0] == wordle:
                 display_kb(kbwin)
                 display_words(scorewin, guessed_words)
-                print_str(msgwin, f'You win!', 0, 5, 3)
-                print_str(msgwin, f'Score: {len(guessed_words)}/{max_guesses}',
-                        1, 3, 3)
-                msgwin.refresh()
-                sleep(1)
-                stdscr.getkey()
-                return 0
+                return end_score(win=True, score=len(guessed_words))
         else:
             print_str(msgwin, f'Word not in list.', 1, 0, 1)
             msgwin.refresh()
 
         display_kb(kbwin)
         display_words(scorewin, guessed_words)
-    print_str(msgwin, f'You lose!', 0, 4, 2)
-    print_str(msgwin, f'word: {wordle}', 1, 3, 2)
-    msgwin.refresh()
-    sleep(3)
-    stdscr.getkey()
-    return 1
+    return end_score(win=False)
 
 
 if __name__ == '__main__':
     try:
-        exit(curses.wrapper(game))
+        exit(not curses.wrapper(game)) # flip boolean for good exit
     except KeyboardInterrupt:
         exit(2)
     except ValueError:
