@@ -117,7 +117,6 @@ def compare_wordle(string):
     # and assigns a color to the respective index in the color array. so
     # if string were 'weiss', and wordle were 'white', this function would
     # return something like this: ['weiss', [1,2,1,3,3]]
-    # TODO: also set the alphabet colors in this loop
     for i in range(len(word_dic[0])):
             char = word_dic[0][i]
             if char == wordle[i]:
@@ -148,14 +147,14 @@ def validate_input(screen, string):
         return True
 
 
-def display_words(screen, words, start_y, start_x):
+def display_words(screen, words):
     # updates score_win with previous guesses as well
     # as the keyboard
     screen.clear()
-    y = start_y - 1 # line/height
+    y = -1 # line/height
     for word in words:
         y += 1
-        x = start_x # column/width
+        x = 0 # column/width
         for i in range(len(word[0])):
             char = word[0][i]
             color = word[1][i]
@@ -253,12 +252,12 @@ def game(stdscr):
             guessed_words.append(current_guess)
             if current_guess[0] == wordle:
                 display_kb(kbwin)
-                display_words(scorewin, guessed_words, 0, 0)
+                display_words(scorewin, guessed_words)
                 print('win')
                 sleep(3)
                 return
         display_kb(kbwin)
-        display_words(scorewin, guessed_words, 0, 0)
+        display_words(scorewin, guessed_words)
     print('lose')
     sleep(3)
 
