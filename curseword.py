@@ -3,6 +3,16 @@ from time import sleep
 from random import choice as random_choice
 import curses, curses.textpad
 
+# wordle = 'dozen'
+# max space between letters, actual space depends on screen size
+spacing = 3
+max_guesses = 6
+kb_dict = {letter : 0 for letter in 'abcdefghijklmnopqrstuvwxyz'}
+green = 3
+yellow = 2
+grey = 1
+white = 0
+
 with open('./valid-wordle-words.txt', newline='') as wordle_file:
     w = random_choice(wordle_file.readlines())
     wordle = w.rstrip().lower()
@@ -13,18 +23,12 @@ with open('./valid-input-words.txt', newline='') as words_file:
     words = words_file.readlines()
     valid_words = [w.rstrip().lower() for w in words]
 
-# max space between letters, actual space depends on screen size
-spacing = 3
-max_guesses = 6
-kb_dict = {letter : 0 for letter in 'abcdefghijklmnopqrstuvwxyz'}
-wordle = 'dozen'
 
-
-def prt_color_str(stdscr, string, y, x, color=0):
+def prt_color_str(stdscr, string, y, x, color=white):
     stdscr.addstr(y, x, string, curses.color_pair(color))
 
 
-def prt_color_char(stdscr, char, y, x, color=0, uppercase=True):
+def prt_color_char(stdscr, char, y, x, color=white, uppercase=True):
     if uppercase:
         char = char.upper()
     stdscr.addstr(y, x, char, curses.color_pair(color))
@@ -63,8 +67,7 @@ def display_kb(screen):
 
 
 def echo_read_string(screen, start_y, start_x):
-    # reads raw input from the user, and echoes what it receives.
-    # does no validation whatsoever except check if it's a letter
+    # does no validation whatsoever except test that inputs are letters
     curses.curs_set(True) # turn the cursor on
     # while desirable, in that it sanitizes a bunch of
     # annoying inputs, it also produces strings too long
@@ -105,12 +108,12 @@ def echo_read_string(screen, start_y, start_x):
                 string = string[:-1]
                 i -= 1
                 x -= spacing + 1
-                prt_color_char(screen, blanks, start_y, x, 0)
+                prt_color_char(screen, blanks, start_y, x)
         elif key.lower() in kb_dict: # ignore things like arrow keys
             if i < len(wordle):
                 string += key
                 i += 1
-                prt_color_char(screen, key.lower(), start_y, x, 0)
+                prt_color_char(screen, key.lower(), start_y, x)
                 x += spacing + 1
         # another thing worthy of mention is that the cursor/caret
         # behaves like a ghost, its position is affected by output
@@ -152,11 +155,11 @@ def compare_wordle(string):
     for i in range(len(word_dic[0])):
             char = word_dic[0][i]
             if char == wordle[i]:
-                color = 3 # green
+                color = green
             elif char in wordle:
-                color = 2 # yellow
+                color = yellow
             else:
-                color = 1 # grey
+                color = grey
             word_dic[1][i] = color
             # this ensures 'better' colors have priority, i.e.
             # a previously green letter can't become yellow
@@ -166,21 +169,21 @@ def compare_wordle(string):
 
 
 def set_colors(inverted=False):
-    # this might be important on some terminals, not on kitty or konsole
-    curses.use_default_colors()
     # curses.COLOR can only be invoked after stdscr has been created,
     # and ours is wrapped and I'm too lazy to read the documentation,
-    # so this function's main purpose is uncluttering main
+    # so this function's main purpose is uncluttering main.
+    # this might be important on some terminals, not on kitty or konsole
+    curses.use_default_colors()
     if not inverted:
         # pair 0 is a constant and always points to the default fg/bg colors
         # related: on most systems I tested COLOR_BACK is actually grey
-        curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_BLACK)
-        curses.init_pair(2, curses.COLOR_YELLOW, curses.COLOR_BLACK)
-        curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
+        curses.init_pair(green, curses.COLOR_GREEN, curses.COLOR_BLACK)
+        curses.init_pair(yellow, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+        curses.init_pair(grey, curses.COLOR_WHITE, curses.COLOR_BLACK)
     else:
-        curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_GREEN)
-        curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_YELLOW)
-        curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
+        curses.init_pair(green, curses.COLOR_BLACK, curses.COLOR_GREEN)
+        curses.init_pair(yellow, curses.COLOR_BLACK, curses.COLOR_YELLOW)
+        curses.init_pair(grey, curses.COLOR_BLACK, curses.COLOR_WHITE)
 
 
 def assign_win_geometry(stdscr, border=True):
@@ -246,11 +249,11 @@ def iniatiate_screen(stdscr):
 
 def show_end_score(win:bool, score=max_guesses):
     if win:
-        prt_color_str(msgwin, f'You win!', 0, 5, 3)
-        prt_color_str(msgwin, f'Score: {score}/{max_guesses}', 1, 3, 3)
+        prt_color_str(msgwin, 'You win!', 0, 5, green)
+        prt_color_str(msgwin, f'Score: {score}/{max_guesses}', 1, 3, green)
     else:
-        prt_color_str(msgwin, f'You lose!', 0, 4, 2)
-        prt_color_str(msgwin, f'word: {wordle}', 1, 3, 2)
+        prt_color_str(msgwin, 'You lose!', 0, 4, yellow)
+        prt_color_str(msgwin, f'word: {wordle}', 1, 3, yellow)
     msgwin.refresh()
     msgwin.getkey()
     sleep(2)
@@ -274,7 +277,7 @@ def game(stdscr):
                 show_end_score(win=True, score=len(guessed_words))
                 return 0
         else:
-            prt_color_str(msgwin, f'Word not in list.', 1, 0, 1)
+            prt_color_str(msgwin, 'Word not in list.', 1, 0, grey)
             msgwin.refresh()
         display_kb(kbwin)
         display_words(scorewin, guessed_words)
