@@ -35,7 +35,7 @@ def game(stdscr):
     kb_dic = alphabet
     while len(guessed_words) < max_guesses:
         display.update_kb(kbwin, kb_dic)
-        input_str = input.echo_str(scorewin, len(guessed_words), 0, spacing)
+        input_str = input.echo_str(scorewin, len(guessed_words), spacing)
         if logic.validate_word(input_str, valid_words):
             current_guess = logic.compare_word(input_str, wordle, kb_dic)
             guessed_words.append(current_guess)

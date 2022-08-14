@@ -3,16 +3,16 @@ from const import *
 from display import color_char
 
 
-def echo_str(screen, start_y, start_x, spacing):
+def echo_str(screen, start_y, spacing):
     # does no validation whatsoever except test that inputs are letters
     curses.curs_set(True) # turn the cursor on
     # while desirable, in that it sanitizes a bunch of
     # annoying inputs, it also produces strings too long
     # for ord(), which might fuck up handling of other keys
     screen.keypad(True) # process special keys as unique strings
-    screen.move(start_y, start_x)
-    max_x =len(wordle) * (spacing + 1)
-    x = start_x
+    x = 0
+    screen.move(start_y, x)
+    max_x = len(wordle) * (spacing + 1)
     string = ''
     i = 0
     # avoid not erasing characters if spacing is 0
