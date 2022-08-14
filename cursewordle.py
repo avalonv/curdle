@@ -264,6 +264,7 @@ def game(stdscr):
 
     guessed_words = []
     while len(guessed_words) < max_guesses:
+        display_kb(kbwin)
         input_str = echo_read_string(scorewin, len(guessed_words), 0)
         if validate_input(input_str):
             current_guess = compare_wordle(input_str)
