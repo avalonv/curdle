@@ -213,18 +213,18 @@ def assign_win_geometry(stdscr, border=True):
     kb_start_x = middle_x - 8
     kbwin = curses.newwin(kb_height, kb_width, kb_start_y, kb_start_x)
 
+    border_start_y = 0
+    border_start_x = start_x - spacing - 8
+    border_end_y = kb_start_y + kb_height + 1
+    border_end_x = start_x + score_width + 7
     if border:
-        border_start_y = 0
-        border_start_x = start_x - spacing - 8
-        border_end_y = kb_start_y + kb_height + 1
-        border_end_x = start_x + score_width + 7
         # this is relevant for the resizing loop, should
         # the border be drawn twice for whatever reason
         stdscr.clear()
         curses.textpad.rectangle(stdscr, border_start_y,
             border_start_x, border_end_y, border_end_x)
-    stdscr.addstr(0, middle_x-5, '  wordle  ', curses.color_pair(0))
-    stdscr.refresh()
+        prt_color_str(stdscr, '  wordle  ', 0, middle_x-5, white)
+        stdscr.refresh()
 
 
 def iniatiate_screen(stdscr):
