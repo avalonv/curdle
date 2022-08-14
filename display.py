@@ -52,8 +52,8 @@ def end_score(screen, win:bool, score=max_guesses):
     else:
         color_str(screen, 'You lose!', 0, 4, yellow)
         color_str(screen, f'word: {wordle}', 1, 3, yellow)
-    sleep(2)
     screen.refresh()
+    sleep(2)
 
 
 def assign_win_geometry(stdscr, spacing, border=True):
