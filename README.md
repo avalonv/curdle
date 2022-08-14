@@ -12,7 +12,9 @@ then cd into the new directory and run:
 `./cursewordle.py`
 
 ### Windows
-WIP
+The python curses module isn't available on Windows.
+
+Alternatives such as Uni-Curses seem to be unreliable, so I don't plan to support it.
 
 #### TODO:
 Allow passing of arguments for what the word should be
