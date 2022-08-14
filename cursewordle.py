@@ -24,14 +24,14 @@ with open('./valid-input-words.txt', newline='') as words_file:
     valid_words = [w.rstrip().lower() for w in words]
 
 
-def prt_color_str(stdscr, string, y, x, color=white):
-    stdscr.addstr(y, x, string, curses.color_pair(color))
+def prt_color_str(screen, string, y, x, color=white):
+    screen.addstr(y, x, string, curses.color_pair(color))
 
 
-def prt_color_char(stdscr, char, y, x, color=white, uppercase=True):
+def prt_color_char(screen, char, y, x, color=white, uppercase=True):
     if uppercase:
         char = char.upper()
-    stdscr.addstr(y, x, char, curses.color_pair(color))
+    screen.addstr(y, x, char, curses.color_pair(color))
 
 
 def display_words(screen, words):
@@ -188,7 +188,6 @@ def set_colors(inverted=False):
 
 def assign_win_geometry(stdscr, border=True):
     # a whole nightmare in the palm of your hand!
-    global scorewin, msgwin, kbwin
     max_y = curses.LINES - 1
     max_x = curses.COLS - 1
     middle_x = round(max_x / 2)
@@ -226,6 +225,8 @@ def assign_win_geometry(stdscr, border=True):
         prt_color_str(stdscr, '  wordle  ', 0, middle_x-5, white)
         stdscr.refresh()
 
+    return scorewin, msgwin, kbwin
+
 
 def iniatiate_screen(stdscr):
     global spacing
@@ -239,28 +240,32 @@ def iniatiate_screen(stdscr):
     while True:
         if spacing >= 1:
             try:
-                assign_win_geometry(stdscr)
+                windows = assign_win_geometry(stdscr)
                 break
             except curses.error:
                 spacing -= 1
         else:
             raise OverflowError
+    return windows
 
 
-def show_end_score(win:bool, score=max_guesses):
+def show_end_score(screen, win:bool, score=max_guesses):
     if win:
-        prt_color_str(msgwin, 'You win!', 0, 5, green)
-        prt_color_str(msgwin, f'Score: {score}/{max_guesses}', 1, 3, green)
+        prt_color_str(screen, 'You win!', 0, 5, green)
+        prt_color_str(screen, f'Score: {score}/{max_guesses}', 1, 3, green)
     else:
-        prt_color_str(msgwin, 'You lose!', 0, 4, yellow)
-        prt_color_str(msgwin, f'word: {wordle}', 1, 3, yellow)
-    msgwin.refresh()
-    msgwin.getkey()
+        prt_color_str(screen, 'You lose!', 0, 4, yellow)
+        prt_color_str(screen, f'word: {wordle}', 1, 3, yellow)
+    screen.refresh()
+    screen.getkey()
     sleep(2)
 
 
 def game(stdscr):
-    iniatiate_screen(stdscr)
+    window = iniatiate_screen(stdscr)
+    scorewin = window[0]
+    msgwin = window[1]
+    kbwin = window[2]
 
     guessed_words = []
     while len(guessed_words) < max_guesses:
@@ -275,7 +280,7 @@ def game(stdscr):
             if current_guess[0] == wordle:
                 display_kb(kbwin)
                 display_words(scorewin, guessed_words)
-                show_end_score(win=True, score=len(guessed_words))
+                show_end_score(msgwin, win=True, score=len(guessed_words))
                 return 0
         else:
             prt_color_str(msgwin, 'Word not in list.', 1, 0, grey)
@@ -283,7 +288,7 @@ def game(stdscr):
         display_kb(kbwin)
         display_words(scorewin, guessed_words)
 
-    show_end_score(win=False)
+    show_end_score(msgwin, win=False)
     return 1
 
 
