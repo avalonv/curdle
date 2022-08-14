@@ -1,9 +1,9 @@
+#!/usr/bin/env python3
 from sys import exit
 from time import sleep
 from random import choice as random_choice
 import curses, curses.textpad
 
-# wordle = 'dozen'
 # max space between letters, actual space depends on screen size
 spacing = 3
 max_guesses = 6
