@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 from sys import exit
 from const import *
-import logic, input, display
+import logic, input
+import output as out
 import curses
 
 # max space between letters, actual space depends on screen size
@@ -19,7 +20,7 @@ def win_size_wrapper(stdscr):
     while True:
         if spacing >= 1:
             try:
-                windows = display.assign_win_geometry(stdscr, spacing)
+                windows = out.assign_win_geometry(stdscr, spacing)
                 break
             except curses.error:
                 spacing -= 1
@@ -34,7 +35,7 @@ def game(stdscr):
     guessed_words = []
     kb_dic = alphabet
     while len(guessed_words) < max_guesses:
-        display.update_kb(kbwin, kb_dic)
+        out.update_kb(kbwin, kb_dic)
         input_str = input.echo_str(scorewin, len(guessed_words), spacing)
         if logic.validate_word(input_str, valid_words):
             current_guess = logic.compare_word(input_str, wordle, kb_dic)
@@ -43,18 +44,18 @@ def game(stdscr):
             msgwin.clear()
             msgwin.refresh()
             if current_guess[0] == wordle:
-                display.update_kb(kbwin, kb_dic)
-                display.update_words(scorewin, guessed_words, spacing)
-                display.end_score(msgwin, win=True, score=len(guessed_words))
+                out.update_kb(kbwin, kb_dic)
+                out.update_words(scorewin, guessed_words, spacing)
+                out.end_score(msgwin, win=True, score=len(guessed_words))
                 stdscr.getkey()
                 return 0
         else:
-            display.color_str(msgwin, 'Word not in list.', 1, 0, grey)
+            out.color_str(msgwin, 'Word not in list.', 1, 0, grey)
             msgwin.refresh()
-        display.update_kb(kbwin, kb_dic)
-        display.update_words(scorewin, guessed_words, spacing)
+        out.update_kb(kbwin, kb_dic)
+        out.update_words(scorewin, guessed_words, spacing)
 
-    display.end_score(msgwin, win=False)
+    out.end_score(msgwin, win=False)
     stdscr.getkey()
     return 1
 

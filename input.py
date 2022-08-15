@@ -1,6 +1,6 @@
 import curses
 from const import *
-from display import color_char
+from output import color_char
 
 
 def echo_str(screen, start_y, spacing):
