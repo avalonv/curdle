@@ -3,13 +3,13 @@
 ![cursewordle](https://user-images.githubusercontent.com/29720696/184530270-8387aa1e-8f16-469e-9d8a-fd9131c1c3c6.GIF)
 
 ### Installation & Usage
-Should not require any additional tools in modern *nix systems, simply clone this repository:
+Should not require any additional tools in modern \*nix systems, simply clone this repository:
 
 `git clone https://github.com/avalonv/cursewordle`
 
 then cd into the new directory and run:
 
-`./cursewordle.py`
+`./wordle.py`
 
 ### Windows
 The python curses module isn't available on Windows.
