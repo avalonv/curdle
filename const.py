@@ -4,19 +4,19 @@ from random import choice as random_choice
 
 # this includes almost all 5 letter words, which constitutes a much
 # larger set than the one we sample wordle from
-with open('./valid-words-extra.txt', newline='') as file1:
+with open('./valid-inputs.txt', newline='') as file1:
     lines = file1.readlines()
     valid_words = [w.rstrip().lower() for w in lines]
 
-with open('./valid-words.txt', newline='') as file2:
+with open('./wordle-list.txt', newline='') as file2:
     lines = file2.readlines()
-    valid_answers = [w.rstrip().lower() for w in lines]
+    wordle_list = [w.rstrip().lower() for w in lines]
 
 # the four horsemen of the apocalypse
 max_guesses = 6
 word_len = len(valid_words[0])
 alphabet = {letter : 0 for letter in 'abcdefghijklmnopqrstuvwxyz'}
-daily_num = (dt.utcnow() - dt(2021, 6, 19)).days % len(valid_answers)
+daily_num = (dt.utcnow() - dt(2021, 6, 19)).days % len(wordle_list)
 
 # and their mediocre siblings
 green = 3
@@ -26,12 +26,12 @@ white = 0
 
 
 def set_random_wordle():
-    wordle = random_choice(valid_answers)
+    wordle = random_choice(wordle_list)
     return wordle
 
 
 def set_nyt_wordle():
-    wordle = valid_answers[daily_num]
+    wordle = wordle_list[daily_num]
     return wordle
 
 
