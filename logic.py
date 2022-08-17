@@ -1,10 +1,10 @@
-from const import *
+from config import *
 
 
-def validate_word(string, valid_words):
+def validate_word(string):
     # this actually tests whether the string from input.echo_string is a valid
     # word, since the former just sanitizes for random bullshit like numbers
-    if len(string) != len(wordle):
+    if len(string) != wordlen:
         return False
     elif string not in valid_words:
         return False

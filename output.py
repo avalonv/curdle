@@ -1,4 +1,4 @@
-import curses, curses.textpad
+import curses
 from const import *
 from time import sleep
 
@@ -14,6 +14,12 @@ def color_char(screen, char, y, x, color=white, uppercase=True):
 
 
 def update_words(screen, words, spacing):
+# TODO: don't paint letters yellow if all the instances
+# of that letter have already been identified as green
+# for the current iteration.
+# i.e. if the wordle is 'omens' and the last guess was
+# 'oozes', print the second 'o' as if it were grey to
+# indicate there are no more instances of that letter
     screen.clear()
     y = -1
     for word in words:
@@ -45,53 +51,12 @@ def update_kb(screen, kb_dic):
     screen.refresh()
 
 
-def end_score(screen, win:bool, score=max_guesses):
+def end_score(screen, win:bool, result):
     if win:
         color_str(screen, 'You win!', 0, 5, green)
-        color_str(screen, f'Score: {score}/{max_guesses}', 1, 3, green)
+        color_str(screen, f'Score: {result}/{max_guesses}', 1, 3, green)
     else:
         color_str(screen, 'You lose!', 0, 4, yellow)
-        color_str(screen, f'word: {wordle}', 1, 3, yellow)
+        color_str(screen, f'word: {result}', 1, 3, yellow)
     screen.refresh()
     sleep(2)
-
-
-def assign_win_geometry(stdscr, spacing, border=True):
-    # a whole nightmare in the palm of your hand!
-    max_y = curses.LINES - 1
-    max_x = curses.COLS - 1
-    middle_x = round(max_x / 2)
-
-    score_width = len(wordle) * (spacing + 1)
-    score_height = max_guesses
-    # try to align text with the middle of the screen
-    # don't ask me why it works, I genuinely have no idea
-    start_x =  round(middle_x - score_width / 2 + (spacing - 1) / 2 + 1)
-    start_y = 2
-    scorewin = curses.newwin(score_height, score_width, start_y, start_x)
-
-    msg_width = 20
-    msg_height = 2
-    msg_start_y = start_y + score_height
-    msg_start_x = middle_x - 8
-    msgwin = curses.newwin(msg_height, msg_width, msg_start_y, msg_start_x)
-
-    kb_width = 20
-    kb_height = 3
-    kb_start_y = msg_start_y + msg_height
-    kb_start_x = middle_x - 8
-    kbwin = curses.newwin(kb_height, kb_width, kb_start_y, kb_start_x)
-
-    border_start_y = 0
-    border_start_x = start_x - spacing - 8
-    border_end_y = kb_start_y + kb_height + 1
-    border_end_x = start_x + score_width + 7
-    if border:
-        # this is relevant for the resizing loop, should
-        # the border be drawn twice for whatever reason
-        stdscr.clear()
-        curses.textpad.rectangle(stdscr, border_start_y,
-            border_start_x, border_end_y, border_end_x)
-        color_str(stdscr, '  wordle  ', 0, middle_x-5, white)
-        stdscr.refresh()
-    return scorewin, msgwin, kbwin
