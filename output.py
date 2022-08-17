@@ -54,7 +54,7 @@ def update_kb(screen, kb_dic):
 def end_score(screen, win:bool, result):
     if win:
         color_str(screen, 'You win!', 0, 5, green)
-        color_str(screen, f'Score: {result}/{max_guesses}', 1, 3, green)
+        color_str(screen, f'Score: {result}/{max_guesses}', 1, 4, green)
     else:
         color_str(screen, 'You lose!', 0, 4, yellow)
         color_str(screen, f'word: {result}', 1, 3, yellow)
