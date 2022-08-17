@@ -85,5 +85,5 @@ if __name__ == '__main__':
         exit(0)
     except OverflowError:
         print("Couldn't start display.")
-        print("Most likely your window is too small.")
+        print("Window needs to be at least 27x16")
         exit(2)
