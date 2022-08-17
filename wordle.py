@@ -70,7 +70,7 @@ if __name__ == '__main__':
         if arg == "--nyt":
             wordle = set_nyt_wordle()
             is_daily = True
-        elif len(arg) == wordlen and arg in valid_words:
+        elif len(arg) == word_len and arg in valid_words:
             wordle = arg
         else:
             print(f"Word not in list")

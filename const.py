@@ -14,7 +14,7 @@ with open('./valid-words.txt', newline='') as file2:
 
 # the four horsemen of the apocalypse
 max_guesses = 6
-wordlen = len(valid_words[0])
+word_len = len(valid_words[0])
 alphabet = {letter : 0 for letter in 'abcdefghijklmnopqrstuvwxyz'}
 daily_num = (dt.utcnow() - dt(2021, 6, 19)).days % len(valid_answers)
 
@@ -58,7 +58,7 @@ def set_win_size(stdscr, spacing, border=True, daily=False):
     max_x = curses.COLS - 1
     middle_x = round(max_x / 2)
 
-    score_width = wordlen * (spacing + 1)
+    score_width = word_len * (spacing + 1)
     score_height = max_guesses
     # try to align text with the middle of the screen
     # don't ask me why it works, I genuinely have no idea

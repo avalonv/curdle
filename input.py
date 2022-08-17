@@ -12,7 +12,7 @@ def echo_str(screen, start_y, spacing):
     screen.keypad(True) # process special keys as unique strings
     x = 0
     screen.move(start_y, x)
-    max_x = wordlen * (spacing + 1)
+    max_x = word_len * (spacing + 1)
     string = ''
     i = 0
     # avoid not erasing characters if spacing is 0
@@ -47,7 +47,7 @@ def echo_str(screen, start_y, spacing):
                 x -= spacing + 1
                 color_char(screen, blanks, start_y, x)
         elif key.lower() in alphabet: # ignore things like arrow keys
-            if i <wordlen:
+            if i <word_len:
                 string += key
                 i += 1
                 color_char(screen, key.lower(), start_y, x)
