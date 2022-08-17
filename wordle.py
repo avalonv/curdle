@@ -5,6 +5,10 @@ import input as input
 import output as out
 import curses
 
+is_daily = False
+# max space between letters, actual space depends on screen size
+spacing = 3
+
 
 def win_size_wrapper(stdscr):
     global spacing
@@ -62,9 +66,6 @@ def game(stdscr, wordle):
 
 
 if __name__ == '__main__':
-    is_daily = False
-    # max space between letters, actual space depends on screen size
-    spacing = 3
     if len(argv) > 1:
         arg = argv[1].rstrip().lower()
         if arg == "--nyt":
