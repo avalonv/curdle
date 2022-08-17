@@ -1,6 +1,6 @@
 # cursewordle - A terminal wordle clone in curses
-![ezgif-5-9f47b7e1b2](https://user-images.githubusercontent.com/29720696/185168697-ead70f69-2386-4c82-a50b-3b661915123a.gif)
 
+![untitled](https://user-images.githubusercontent.com/29720696/185174032-949f074f-5cfb-493d-8755-710c09f133f5.gif)
 
 ## Installation & Usage
 Should not require any additional tools in modern \*nix systems, simply clone this repository:
