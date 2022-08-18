@@ -58,9 +58,13 @@ def echo_str(screen, start_y, spacing):
         # this aligns it with the next input stream so it's prettier,
         # but it's not necessary for the rest to work.
         if not x >= max_x:
+            curses.curs_set(True)
             screen.move(start_y, x)
         else:
-            screen.move(start_y, x - spacing - 1)
+            # some terminals lack blinking cursors, so
+            # disable it on the max x so it doesn't
+            # overlap with the last letter
+            curses.curs_set(False)
 
     curses.curs_set(False)
     return string
