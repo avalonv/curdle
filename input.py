@@ -1,6 +1,7 @@
 import curses
 from const import *
 from output import color_char
+from collections import Counter, defaultdict
 
 
 def echo_str(screen, start_y, spacing):
@@ -70,10 +71,10 @@ def echo_str(screen, start_y, spacing):
     return string
 
 
-def compare_word(string, wordle, kb_dic):
-    # this loop compares the chars in 'string' and 'wordle' based on index,
+def compare_word(string, solution, kb_dic=alphabet):
+    # this loop compares the chars in 'string' and 'solution' based on index,
     # and assigns a color to the respective index in the color array. so
-    # if string were 'weiss', and wordle were 'white', this function would
+    # if string were 'weiss', and solution were 'white', this function would
     # return something like this: ['weiss', [1,2,1,3,3]].
     # the structure for this is [string literal, [list of ints
     # referencing an assigned color]]. since the same letter can appear
@@ -81,11 +82,13 @@ def compare_word(string, wordle, kb_dic):
     # instead of a real dictionary, where repeated letters would all
     # point to the same color regardless of location.
     word_dic = string, [0 for c in string] # actually a list >_>
+    green_c_count = defaultdict(int) # creates keys if they don't exist
     for i in range(len(word_dic[0])):
             char = word_dic[0][i]
-            if char == wordle[i]:
+            if char == solution[i]:
                 color = green
-            elif char in wordle:
+                green_c_count[char] += 1
+            elif char in solution:
                 color = yellow
             else:
                 color = grey
@@ -94,4 +97,13 @@ def compare_word(string, wordle, kb_dic):
             # a previously green letter can't become yellow
             if kb_dic[char] < color:
                 kb_dic[char] = color
+    string_c_count = Counter(string)
+    solution_c_count = Counter(solution)
+    for k, v in green_c_count.items():
+        if v == solution_c_count[k]:
+            if string_c_count[k] > solution_c_count[k]:
+                for i in range(len(word_dic[0])):
+                    char = word_dic[0][i]
+                    if char == k and word_dic[1][i] == yellow:
+                        word_dic[1][i] = grey
     return word_dic
