@@ -3,20 +3,20 @@ from datetime import datetime as dt
 from random import choice as random_choice
 
 # this includes almost all 5 letter words, which constitutes a much
-# larger set than the one we sample wordle from
+# larger set than the one we sample solution from
 with open('./valid-inputs.txt', newline='') as file1:
     lines = file1.readlines()
     valid_words = [w.rstrip().lower() for w in lines]
 
-with open('./wordle-list.txt', newline='') as file2:
+with open('./solution-list.txt', newline='') as file2:
     lines = file2.readlines()
-    wordle_list = [w.rstrip().lower() for w in lines]
+    solution_list = [w.rstrip().lower() for w in lines]
 
 # the four horsemen of the apocalypse
 max_guesses = 6
 word_len = len(valid_words[0])
 alphabet = {letter : 0 for letter in 'abcdefghijklmnopqrstuvwxyz'}
-daily_num = (dt.utcnow() - dt(2021, 6, 19)).days % len(wordle_list)
+daily_num = (dt.utcnow() - dt(2021, 6, 19)).days % len(solution_list)
 
 # and their mediocre siblings
 green = 3
@@ -25,14 +25,14 @@ grey = 1
 white = 0
 
 
-def set_random_wordle():
-    wordle = random_choice(wordle_list)
-    return wordle
+def set_random_word():
+    solution = random_choice(solution_list)
+    return solution
 
 
-def set_nyt_wordle():
-    wordle = wordle_list[daily_num]
-    return wordle
+def set_nyt_word():
+    solution = solution_list[daily_num]
+    return solution
 
 
 def set_colors(inverted=False):
@@ -83,9 +83,9 @@ def set_win_size(stdscr, spacing, border=True, daily=False):
     border_end_y = kb_start_y + kb_height + 1
     border_end_x = start_x + score_width + 7
     if border:
-        title = '   wordle   '
+        title = '   solution   '
         if daily:
-            title = f'   wordle #{daily_num}   '
+            title = f'   solution #{daily_num}   '
         title_start_x = middle_x - round(len(title) / 2)
         # this is relevant for the resizing loop, should the border
         # be drawn twice for whatever reason (happens sometimes)

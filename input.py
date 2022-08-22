@@ -14,7 +14,7 @@ def echo_str(screen, start_y, spacing):
     x = 0
     screen.move(start_y, x)
     max_x = word_len * (spacing + 1)
-    string = ''
+    user_str = ''
     i = 0
     # avoid not erasing characters if spacing is 0
     if spacing > 0:
@@ -43,13 +43,13 @@ def echo_str(screen, start_y, spacing):
             # whatever was left between those chars as a result of
             # shitty input handling (curses is an apt name)
             if i > 0:
-                string = string[:-1]
+                user_str = user_str[:-1]
                 i -= 1
                 x -= spacing + 1
                 color_char(screen, blanks, start_y, x)
         elif key.lower() in alphabet: # ignore things like arrow keys
             if i <word_len:
-                string += key
+                user_str += key
                 i += 1
                 color_char(screen, key.lower(), start_y, x)
                 x += spacing + 1
@@ -68,10 +68,10 @@ def echo_str(screen, start_y, spacing):
             curses.curs_set(False)
 
     curses.curs_set(False)
-    return string
+    return user_str
 
 
-def compare_word(string, solution, kb_dic=alphabet):
+def compare_word(guess, solution, kb_dic=alphabet):
     # this loop compares the chars in 'string' and 'solution' based on index,
     # and assigns a color to the respective index in the color array. so
     # if string were 'weiss', and solution were 'white', this function would
@@ -81,10 +81,10 @@ def compare_word(string, solution, kb_dic=alphabet):
     # multiple times in a word, we prefer to use the index i as a key
     # instead of a real dictionary, where repeated letters would all
     # point to the same color regardless of location.
-    word_dic = string, [0 for c in string] # actually a list >_>
+    matches = guess, [0 for c in guess] # actually a list >_>
     green_c_count = defaultdict(int) # creates keys if they don't exist
-    for i in range(len(word_dic[0])):
-            char = word_dic[0][i]
+    for i in range(len(matches[0])):
+            char = matches[0][i]
             if char == solution[i]:
                 color = green
                 green_c_count[char] += 1
@@ -92,18 +92,18 @@ def compare_word(string, solution, kb_dic=alphabet):
                 color = yellow
             else:
                 color = grey
-            word_dic[1][i] = color
+            matches[1][i] = color
             # this ensures 'better' colors have priority, i.e.
             # a previously green letter can't become yellow
             if kb_dic[char] < color:
                 kb_dic[char] = color
-    string_c_count = Counter(string)
+    string_c_count = Counter(guess)
     solution_c_count = Counter(solution)
     for k, v in green_c_count.items():
         if v == solution_c_count[k]:
             if string_c_count[k] > solution_c_count[k]:
-                for i in range(len(word_dic[0])):
-                    char = word_dic[0][i]
-                    if char == k and word_dic[1][i] == yellow:
-                        word_dic[1][i] = grey
-    return word_dic
+                for i in range(len(matches[0])):
+                    char = matches[0][i]
+                    if char == k and matches[1][i] == yellow:
+                        matches[1][i] = grey
+    return matches

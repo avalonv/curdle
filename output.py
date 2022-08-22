@@ -13,16 +13,16 @@ def color_char(screen, char, y, x, color=white, uppercase=True):
     screen.addstr(y, x, char, curses.color_pair(color))
 
 
-def update_words(screen, words, spacing):
+def update_words(screen, guesses, spacing):
 # TODO: don't paint letters yellow if all the instances
 # of that letter have already been identified as green
 # for the current iteration.
-# i.e. if the wordle is 'omens' and the last guess was
+# i.e. if the solution is 'omens' and the last guess was
 # 'oozes', print the second 'o' as if it were grey to
 # indicate there are no more instances of that letter
     screen.clear()
     y = -1
-    for word in words:
+    for word in guesses:
         y += 1
         x = 0
         for i in range(len(word[0])):

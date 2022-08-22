@@ -32,23 +32,23 @@ def win_size_wrapper(stdscr):
     return windows
 
 
-def game(stdscr, wordle):
+def game(stdscr, solution):
     scorewin, msgwin, kbwin = win_size_wrapper(stdscr)
 
     guessed_words = []
     kb_dic = alphabet
     while len(guessed_words) < max_guesses:
         out.update_kb(kbwin, kb_dic)
-        input_str = input.echo_str(scorewin, len(guessed_words), spacing)
-        if input_str in valid_words:
-            current_guess = input.compare_word(input_str, wordle, kb_dic)
+        user_input = input.echo_str(scorewin, len(guessed_words), spacing)
+        if user_input in valid_words:
+            current_guess = input.compare_word(user_input, solution, kb_dic)
             guessed_words.append(current_guess)
             scorewin.refresh()
             # only refresh 'word not in list'
             # message if new input passes
             msgwin.clear()
             msgwin.refresh()
-            if current_guess[0] == wordle:
+            if current_guess[0] == solution:
                 out.update_kb(kbwin, kb_dic)
                 out.update_words(scorewin, guessed_words, spacing)
                 out.end_score(msgwin, win=True, result=len(guessed_words))
@@ -60,7 +60,7 @@ def game(stdscr, wordle):
         out.update_kb(kbwin, kb_dic)
         out.update_words(scorewin, guessed_words, spacing)
 
-    out.end_score(msgwin, win=False, result=wordle)
+    out.end_score(msgwin, win=False, result=solution)
     stdscr.getkey()
     return 1
 
@@ -69,18 +69,18 @@ if __name__ == '__main__':
     if len(argv) > 1:
         arg = argv[1].rstrip().lower()
         if arg == "--nyt":
-            wordle = set_nyt_wordle()
+            solution = set_nyt_word()
             is_daily = True
         elif len(arg) == word_len and arg in valid_words:
-            wordle = arg
+            solution = arg
         else:
             print(f"Word not in list")
             exit(2)
     else:
-        wordle = set_random_wordle()
+        solution = set_random_word()
         daily_word = 0
     try:
-        exit(curses.wrapper(game, wordle))
+        exit(curses.wrapper(game, solution))
     except KeyboardInterrupt:
         exit(0)
     except OverflowError:
