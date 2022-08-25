@@ -86,12 +86,12 @@ def compare_word(guess, solution, kb_dic=alphabet):
     for i in range(len(matches[0])):
             char = matches[0][i]
             if char == solution[i]:
-                color = green
+                color = Status.MATCH
                 green_c_count[char] += 1
             elif char in solution:
-                color = yellow
+                color = Status.MISPLACE
             else:
-                color = grey
+                color = Status.MISMATCH
             matches[1][i] = color
             # this ensures 'better' colors have priority, i.e.
             # a previously green letter can't become yellow
@@ -104,6 +104,6 @@ def compare_word(guess, solution, kb_dic=alphabet):
             if string_c_count[k] > solution_c_count[k]:
                 for i in range(len(matches[0])):
                     char = matches[0][i]
-                    if char == k and matches[1][i] == yellow:
-                        matches[1][i] = grey
+                    if char == k and matches[1][i] == Status.MISPLACE:
+                        matches[1][i] = Status.MISMATCH
     return matches

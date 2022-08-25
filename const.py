@@ -18,11 +18,12 @@ word_len = len(valid_words[0])
 alphabet = {letter : 0 for letter in 'abcdefghijklmnopqrstuvwxyz'}
 daily_num = (dt.utcnow() - dt(2021, 6, 19)).days % len(solution_list)
 
-# and their mediocre siblings
-green = 3
-yellow = 2
-grey = 1
-white = 0
+
+class Status(int):
+    MATCH = 3
+    MISPLACE = 2
+    MISMATCH = 1
+    OTHER = 0
 
 
 def set_random_word():
@@ -41,13 +42,13 @@ def set_colors(inverted=False):
     if not inverted:
         # pair 0 is a constant and always points to the default fg/bg colors
         # related: on most systems I tested COLOR_BACK is actually grey
-        curses.init_pair(green, curses.COLOR_GREEN, curses.COLOR_BLACK)
-        curses.init_pair(yellow, curses.COLOR_YELLOW, curses.COLOR_BLACK)
-        curses.init_pair(grey, curses.COLOR_WHITE, curses.COLOR_BLACK)
+        curses.init_pair(Status.MATCH, curses.COLOR_GREEN, curses.COLOR_BLACK)
+        curses.init_pair(Status.MISPLACE, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+        curses.init_pair(Status.MISMATCH, curses.COLOR_WHITE, curses.COLOR_BLACK)
     else:
-        curses.init_pair(green, curses.COLOR_BLACK, curses.COLOR_GREEN)
-        curses.init_pair(yellow, curses.COLOR_BLACK, curses.COLOR_YELLOW)
-        curses.init_pair(grey, curses.COLOR_BLACK, curses.COLOR_WHITE)
+        curses.init_pair(Status.MATCH, curses.COLOR_BLACK, curses.COLOR_GREEN)
+        curses.init_pair(Status.MISPLACE, curses.COLOR_BLACK, curses.COLOR_YELLOW)
+        curses.init_pair(Status.MISMATCH, curses.COLOR_BLACK, curses.COLOR_WHITE)
 
 
 def set_win_size(stdscr, spacing, border=True, daily=False):
@@ -83,15 +84,15 @@ def set_win_size(stdscr, spacing, border=True, daily=False):
     border_end_y = kb_start_y + kb_height + 1
     border_end_x = start_x + score_width + 7
     if border:
-        title = '   solution   '
+        title = '   wordle   '
         if daily:
-            title = f'   solution #{daily_num}   '
+            title = f'   wordle #{daily_num}   '
         title_start_x = middle_x - round(len(title) / 2)
         # this is relevant for the resizing loop, should the border
         # be drawn twice for whatever reason (happens sometimes)
         stdscr.clear()
         curses.textpad.rectangle(stdscr, border_start_y,
             border_start_x, border_end_y, border_end_x)
-        stdscr.addstr(0, title_start_x, title, curses.color_pair(white))
+        stdscr.addstr(0, title_start_x, title, curses.color_pair(Status.OTHER))
         stdscr.refresh()
     return scorewin, msgwin, kbwin

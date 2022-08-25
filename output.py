@@ -3,11 +3,11 @@ from const import *
 from time import sleep
 
 
-def color_str(screen, string, y, x, color=white):
+def color_str(screen, string, y, x, color=0):
     screen.addstr(y, x, string, curses.color_pair(color))
 
 
-def color_char(screen, char, y, x, color=white, uppercase=True):
+def color_char(screen, char, y, x, color=0, uppercase=True):
     if uppercase:
         char = char.upper()
     screen.addstr(y, x, char, curses.color_pair(color))
@@ -53,10 +53,10 @@ def update_kb(screen, kb_dic):
 
 def end_score(screen, win:bool, result):
     if win:
-        color_str(screen, 'You win!', 0, 5, green)
-        color_str(screen, f'Score: {result}/{max_guesses}', 1, 4, green)
+        color_str(screen, 'You win!', 0, 5, Status.MATCH)
+        color_str(screen, f'Score: {result}/{max_guesses}', 1, 4, Status.MATCH)
     else:
-        color_str(screen, 'You lose!', 0, 4, yellow)
-        color_str(screen, f'word: {result}', 1, 3, yellow)
+        color_str(screen, 'You lose!', 0, 4, Status.MISPLACE)
+        color_str(screen, f'word: {result}', 1, 3, Status.MISPLACE)
     screen.refresh()
     sleep(2)
