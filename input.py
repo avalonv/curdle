@@ -7,15 +7,14 @@ from collections import Counter
 def echo_str(screen, start_y, spacing):
     # does no validation whatsoever except test that inputs are letters
     curses.curs_set(True) # turn the cursor on
-    # while desirable, in that it sanitizes a bunch of
-    # annoying inputs, it also produces strings too long
-    # for ord(), which might fuck up handling of other keys
-    screen.keypad(True) # process special keys as unique strings
+    # process special keys as unique strings. while preferable
+    # in that it sanitizes a bunch of annoying inputs, the side
+    # effect is it returns strings too long for ord() :(
+    screen.keypad(True)
     x = 0
     screen.move(start_y, x)
     max_x = Config.WORDLEN * (spacing + 1)
-    user_str = ''
-    i = 0
+    user_string = ''
     # avoid not erasing characters if spacing is 0
     if spacing > 0:
         blanks = ' ' * spacing
@@ -34,41 +33,33 @@ def echo_str(screen, start_y, spacing):
               or key == '\b'
               or key == '\x7f'
               or key == 'KEY_DC'):
-            # TL;DR is x determines where the input goes, and we use
-            # i to keep track of how many characters were actually typed
-            # (although in practice you can infer one from the other),
-            # when we delete a word (backspace) we reduce i by one
-            # and x by the amount of letterspacing plus one, and we
-            # print as many spaces (blanks) as needed to also clear
-            # whatever was left between those chars as a result of
-            # shitty input handling (curses is an apt name)
-            if i > 0:
-                user_str = user_str[:-1]
-                i -= 1
+            # x keeps track of where characters should be displayed,
+            # it can technically be inferred from len(user_string)
+            # when we delete a word (backspace) we decrease x by the
+            # amount of letterspacing (plus one), and print spaces over it
+            if len(user_string) > 0:
+                user_string = user_string[:-1]
                 x -= spacing + 1
                 color_char(screen, blanks, start_y, x)
-        elif key.lower() in Config.ALPHABET: # ignore things like arrow keys
-            if i < Config.WORDLEN:
-                user_str += key
-                i += 1
+        elif key.lower() in Config.ALPHABET:
+            if len(user_string) < Config.WORDLEN:
+                user_string += key
                 color_char(screen, key.lower(), start_y, x)
                 x += spacing + 1
         # another thing worthy of mention is that the cursor/caret
         # behaves like a ghost, its position is affected by output
         # functions, but it has no bearing where input actually goes.
-        # this aligns it with the next input stream so it's prettier,
-        # but it's not necessary for the rest to work.
+        # this aligns it with the next input block so it's prettier
         if not x >= max_x:
             curses.curs_set(True)
             screen.move(start_y, x)
         else:
-            # some terminals lack blinking cursors, so
-            # disable it on the max x so it doesn't
-            # overlap with the last letter
+            # some terminals lack blinking cursors, so we disable it
+            # on the max x so it doesn't overlap with the last letter
             curses.curs_set(False)
 
     curses.curs_set(False)
-    return user_str
+    return user_string
 
 
 def compare_word(guess:str, solution:str, kb_status:dict):
