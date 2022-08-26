@@ -1,5 +1,5 @@
 import curses, curses.textpad
-from config import *
+from config import Config, Status
 from time import sleep
 
 
@@ -43,7 +43,7 @@ def update_words(screen, guesses, spacing):
 def update_kb(screen, kb_status):
     screen.clear()
     y = 0
-    for row in Config.KBSTYLE:
+    for row in Config.KBLAYOUT:
         x = 0
         for letter in row:
             try:
@@ -99,7 +99,7 @@ def create_wins(stdscr, spacing, border=Config.BORDER, is_daily=False):
     kb_width = 20 + 2
     kb_height = 3
     kb_start_y = msg_start_y + msg_height
-    kb_start_x = round(middle_x - (len(max(Config.KBSTYLE, key=len)) + 1) / 2)
+    kb_start_x = round(middle_x - (len(max(Config.KBLAYOUT, key=len)) + 1) / 2)
     kbwin = curses.newwin(kb_height, kb_width, kb_start_y, kb_start_x)
 
     border_start_y = 0

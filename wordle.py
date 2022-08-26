@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-from config import *
-from sys import argv
+import curses
 import input as input
 import output as out
-import curses
+from config import Config, Status
 
 
 def game(stdscr, solution, daily=False):
@@ -58,6 +57,7 @@ def game(stdscr, solution, daily=False):
 
 
 if __name__ == '__main__':
+    from sys import argv
     solution = Config.RANDOMWORD
     daily = False
     if len(argv) > 1:

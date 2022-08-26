@@ -1,5 +1,5 @@
 import curses
-from config import *
+from config import Config, Status
 from output import print_char
 from collections import Counter
 
