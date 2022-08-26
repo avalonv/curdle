@@ -22,7 +22,8 @@ def you_won(screen, tries):
 
 def you_lose(screen, solution):
     print_str(screen, 'You lose!', 0, 4, Status.MISPLACE)
-    print_str(screen, f'word: {solution}', 1, 3, Status.MISPLACE)
+    if Config.SHOWSOLUTION:
+        print_str(screen, f'word: {solution}', 1, 3, Status.MISPLACE)
     screen.refresh()
     sleep(2)
 

@@ -15,6 +15,8 @@ with open('./solution-list.txt', newline='') as file2:
 class Config():
     # whether to draw a border & title around the screen
     BORDER = True
+    # whether to print the solution after losing a game
+    SHOWSOLUTION = True
     # max space between letters, and thus the size of
     # the interface. actual space depends on screen size
     MAXSPACING = 3
