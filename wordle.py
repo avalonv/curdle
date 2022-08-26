@@ -6,8 +6,7 @@ import output as out
 import curses
 
 daily = False
-# max space between letters, actual space depends on screen size
-spacing = 3
+spacing = Config.MAXSPACING
 
 
 def win_size_wrapper(stdscr):
@@ -23,7 +22,7 @@ def win_size_wrapper(stdscr):
     while True:
         if spacing >= 1:
             try:
-                win_list = out.create_wins(stdscr, spacing, True, daily)
+                win_list = out.create_wins(stdscr, spacing, is_daily=daily)
                 break
             except curses.error:
                 spacing -= 1

@@ -77,7 +77,7 @@ def set_colors(inverted=False):
         curses.init_pair(Status.MISMATCH, curses.COLOR_BLACK, curses.COLOR_WHITE)
 
 
-def create_wins(stdscr, spacing, border=True, daily=False):
+def create_wins(stdscr, spacing, border=Config.BORDER, is_daily=False):
     # a whole nightmare in the palm of your hand!
     # realistically this doesn't have to be here. it's here
     # because it's unsightly and I don't want it anywhere else
@@ -111,7 +111,7 @@ def create_wins(stdscr, spacing, border=True, daily=False):
     border_end_x = start_x + score_width + 7
     if border:
         title = '   wordle   '
-        if daily:
+        if is_daily:
             title = f'   wordle #{Config.DAILYNUM}   '
         title_start_x = middle_x - round(len(title) / 2)
         # this is relevant for the resizing loop, should the border

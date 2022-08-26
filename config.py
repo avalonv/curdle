@@ -13,7 +13,14 @@ with open('./solution-list.txt', newline='') as file2:
 
 
 class Config():
+    # whether to draw a border & title around the screen
+    BORDER = True
+    # max space between letters, and thus the size of
+    # the interface. actual space depends on screen size
+    MAXSPACING = 3
+    # max number of attempts before the game ends
     MAXGUESSES = 6
+    # these you probably shouldn't touch
     VALIDWORDS = input_list
     WORDLEN = len(VALIDWORDS[0])
     DAILYNUM = (dt.utcnow() - dt(2021, 6, 19)).days % len(solution_list)
