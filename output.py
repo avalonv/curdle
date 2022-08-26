@@ -43,7 +43,7 @@ def update_words(screen, guesses, spacing):
 def update_kb(screen, kb_status):
     screen.clear()
     y = 0
-    for row in 'qwertyuio', 'asdfghjkl', '  zxcvbnm':
+    for row in Config.KBSTYLE:
         x = 0
         for letter in row:
             try:
@@ -51,11 +51,10 @@ def update_kb(screen, kb_status):
             # spaces make it pissy. move caret
             # forward as if one were typed
             except KeyError:
-                print_char(screen, letter, y, x)
                 x += 1
                 continue
             print_char(screen, letter, y, x, status, False)
-            x += 2
+            x += 1
         y += 1
     screen.refresh()
 
@@ -97,10 +96,10 @@ def create_wins(stdscr, spacing, border=Config.BORDER, is_daily=False):
     msg_start_x = middle_x - 8
     msgwin = curses.newwin(msg_height, msg_width, msg_start_y, msg_start_x)
 
-    kb_width = 20
+    kb_width = 20 + 2
     kb_height = 3
     kb_start_y = msg_start_y + msg_height
-    kb_start_x = middle_x - 8
+    kb_start_x = round(middle_x - (len(max(Config.KBSTYLE, key=len)) + 1) / 2)
     kbwin = curses.newwin(kb_height, kb_width, kb_start_y, kb_start_x)
 
     border_start_y = 0

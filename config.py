@@ -12,6 +12,20 @@ with open('./solution-list.txt', newline='') as file2:
     solution_list = [w.rstrip().lower() for w in lines]
 
 
+class Layout(tuple):
+    AZERTY = (
+            '  a z e r t y u i o p',
+            ' q s d f g h j k l m j',
+            '      w x c v b n')
+    QWERTY = (
+            ' q w e r t y u i o',
+            ' a s d f g h j k l',
+            '   z x c v b n m')
+    DVORAK = (
+            '     p y f g c r l',
+            '  a o e u i d h t n s',
+            '   q j k x b m w v z')
+
 class Config():
     # whether to draw a border & title around the screen
     BORDER = True
@@ -22,6 +36,8 @@ class Config():
     MAXSPACING = 3
     # max number of attempts before the game ends
     MAXGUESSES = 6
+    # the layout of the keyboard shown on screen
+    KBSTYLE = Layout.QWERTY
     # these you probably shouldn't touch
     VALIDWORDS = input_list
     WORDLEN = len(VALIDWORDS[0])
