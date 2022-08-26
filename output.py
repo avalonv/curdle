@@ -14,21 +14,13 @@ def color_char(screen, char, y, x, color=0, uppercase=True):
 
 
 def update_words(screen, guesses, spacing):
-# TODO: don't paint letters yellow if all the instances
-# of that letter have already been identified as green
-# for the current iteration.
-# i.e. if the solution is 'omens' and the last guess was
-# 'oozes', print the second 'o' as if it were grey to
-# indicate there are no more instances of that letter
     screen.clear()
     y = -1
-    for word in guesses:
+    for guess in guesses:
         y += 1
         x = 0
-        for i in range(len(word[0])):
-            char = word[0][i]
-            color = word[1][i]
-            color_char(screen, char, y, x, color)
+        for letter, status in zip(guess[0], guess[1]):
+            color_char(screen, letter, y, x, status)
             x += spacing + 1
     screen.refresh()
 
@@ -38,14 +30,16 @@ def update_kb(screen, kb_status):
     y = 0
     for row in 'qwertyuio', 'asdfghjkl', '  zxcvbnm':
         x = 0
-        for char in row:
+        for letter in row:
             try:
-                color = kb_status[char]
-            except KeyError: # spaces make it pissy
-                color_char(screen, char, y, x)
+                status = kb_status[letter]
+            # spaces make it pissy. move caret
+            # forward as if one were typed
+            except KeyError:
+                color_char(screen, letter, y, x)
                 x += 1
                 continue
-            color_char(screen, char, y, x, color, False)
+            color_char(screen, letter, y, x, status, False)
             x += 2
         y += 1
     screen.refresh()
@@ -114,8 +108,8 @@ def create_wins(stdscr, spacing, border=Config.BORDER, is_daily=False):
         if is_daily:
             title = f'   wordle #{Config.DAILYNUM}   '
         title_start_x = middle_x - round(len(title) / 2)
-        # this is relevant for the resizing loop, should the border
-        # be drawn twice for whatever reason (happens sometimes)
+        # this clear() is relevant for the resizing loop, should the
+        # border be drawn twice for whatever reason (happens sometimes)
         stdscr.clear()
         curses.textpad.rectangle(stdscr, border_start_y,
             border_start_x, border_end_y, border_end_x)
