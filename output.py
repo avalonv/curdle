@@ -13,6 +13,20 @@ def color_char(screen, char, y, x, color=0, uppercase=True):
     screen.addstr(y, x, char, curses.color_pair(color))
 
 
+def you_won(screen, tries):
+    color_str(screen, 'You win!', 0, 5, Status.MATCH)
+    color_str(screen, f'Score: {tries}/{Config.MAXGUESSES}', 1, 4, Status.MATCH)
+    screen.refresh()
+    sleep(2)
+
+
+def you_lose(screen, solution):
+    color_str(screen, 'You lose!', 0, 4, Status.MISPLACE)
+    color_str(screen, f'word: {solution}', 1, 3, Status.MISPLACE)
+    screen.refresh()
+    sleep(2)
+
+
 def update_words(screen, guesses, spacing):
     screen.clear()
     y = -1
@@ -43,17 +57,6 @@ def update_kb(screen, kb_status):
             x += 2
         y += 1
     screen.refresh()
-
-
-def end_score(screen, win:bool, result):
-    if win:
-        color_str(screen, 'You win!', 0, 5, Status.MATCH)
-        color_str(screen, f'Score: {result}/{Config.MAXGUESSES}', 1, 4, Status.MATCH)
-    else:
-        color_str(screen, 'You lose!', 0, 4, Status.MISPLACE)
-        color_str(screen, f'word: {result}', 1, 3, Status.MISPLACE)
-    screen.refresh()
-    sleep(2)
 
 
 def set_colors(inverted=False):

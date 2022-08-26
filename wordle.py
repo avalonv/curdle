@@ -43,7 +43,7 @@ def game(stdscr, solution, daily=False):
             if guess == solution:
                 out.update_kb(kbwin, kb_status)
                 out.update_words(scorewin, guessed_words, spacing)
-                out.end_score(msgwin, win=True, result=len(guessed_words))
+                out.you_won(msgwin, len(guessed_words))
                 stdscr.getkey()
                 return 0
         else:
@@ -52,7 +52,7 @@ def game(stdscr, solution, daily=False):
         out.update_kb(kbwin, kb_status)
         out.update_words(scorewin, guessed_words, spacing)
 
-    out.end_score(msgwin, win=False, result=solution)
+    out.you_lose(msgwin, solution)
     stdscr.getkey()
     return 1
 
