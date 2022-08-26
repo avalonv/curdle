@@ -3,26 +3,26 @@ from config import *
 from time import sleep
 
 
-def color_str(screen, string, y, x, color=0):
+def print_str(screen, string, y, x, color=0):
     screen.addstr(y, x, string, curses.color_pair(color))
 
 
-def color_char(screen, char, y, x, color=0, uppercase=True):
+def print_char(screen, char, y, x, color=0, uppercase=True):
     if uppercase:
         char = char.upper()
     screen.addstr(y, x, char, curses.color_pair(color))
 
 
 def you_won(screen, tries):
-    color_str(screen, 'You win!', 0, 5, Status.MATCH)
-    color_str(screen, f'Score: {tries}/{Config.MAXGUESSES}', 1, 4, Status.MATCH)
+    print_str(screen, 'You win!', 0, 5, Status.MATCH)
+    print_str(screen, f'Score: {tries}/{Config.MAXGUESSES}', 1, 4, Status.MATCH)
     screen.refresh()
     sleep(2)
 
 
 def you_lose(screen, solution):
-    color_str(screen, 'You lose!', 0, 4, Status.MISPLACE)
-    color_str(screen, f'word: {solution}', 1, 3, Status.MISPLACE)
+    print_str(screen, 'You lose!', 0, 4, Status.MISPLACE)
+    print_str(screen, f'word: {solution}', 1, 3, Status.MISPLACE)
     screen.refresh()
     sleep(2)
 
@@ -34,7 +34,7 @@ def update_words(screen, guesses, spacing):
         y += 1
         x = 0
         for letter, status in zip(guess[0], guess[1]):
-            color_char(screen, letter, y, x, status)
+            print_char(screen, letter, y, x, status)
             x += spacing + 1
     screen.refresh()
 
@@ -50,10 +50,10 @@ def update_kb(screen, kb_status):
             # spaces make it pissy. move caret
             # forward as if one were typed
             except KeyError:
-                color_char(screen, letter, y, x)
+                print_char(screen, letter, y, x)
                 x += 1
                 continue
-            color_char(screen, letter, y, x, status, False)
+            print_char(screen, letter, y, x, status, False)
             x += 2
         y += 1
     screen.refresh()
@@ -116,6 +116,6 @@ def create_wins(stdscr, spacing, border=Config.BORDER, is_daily=False):
         stdscr.clear()
         curses.textpad.rectangle(stdscr, border_start_y,
             border_start_x, border_end_y, border_end_x)
-        color_str(stdscr, title, 0, title_start_x)
+        print_str(stdscr, title, 0, title_start_x)
         stdscr.refresh()
     return scorewin, msgwin, kbwin

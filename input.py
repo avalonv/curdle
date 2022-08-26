@@ -1,6 +1,6 @@
 import curses
 from config import *
-from output import color_char
+from output import print_char
 from collections import Counter
 
 
@@ -40,11 +40,11 @@ def echo_str(screen, start_y, spacing):
             if len(user_string) > 0:
                 user_string = user_string[:-1]
                 x -= spacing + 1
-                color_char(screen, blanks, start_y, x)
+                print_char(screen, blanks, start_y, x)
         elif key.lower() in Config.ALPHABET:
             if len(user_string) < Config.WORDLEN:
                 user_string += key
-                color_char(screen, key.lower(), start_y, x)
+                print_char(screen, key.lower(), start_y, x)
                 x += spacing + 1
         # another thing worthy of mention is that the cursor/caret
         # behaves like a ghost, its position is affected by output

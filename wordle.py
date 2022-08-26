@@ -47,7 +47,7 @@ def game(stdscr, solution, daily=False):
                 stdscr.getkey()
                 return 0
         else:
-            out.color_str(msgwin, 'Word not in list.', 1, 0, Status.MISMATCH)
+            out.print_str(msgwin, 'Word not in list.', 1, 0, Status.MISMATCH)
             msgwin.refresh()
         out.update_kb(kbwin, kb_status)
         out.update_words(scorewin, guessed_words, spacing)
