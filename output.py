@@ -1,5 +1,5 @@
 import curses, curses.textpad
-from const import *
+from config import *
 from time import sleep
 
 

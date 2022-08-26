@@ -1,5 +1,5 @@
 import curses
-from const import *
+from config import *
 from output import color_char
 from collections import Counter
 

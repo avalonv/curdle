@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from const import *
+from config import *
 from sys import argv
 import input as input
 import output as out
