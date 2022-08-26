@@ -39,16 +39,16 @@ def game(stdscr, solution):
     kb_dic = alphabet
     while len(guessed_words) < max_guesses:
         out.update_kb(kbwin, kb_dic)
-        user_input = input.echo_str(scorewin, len(guessed_words), spacing)
-        if user_input in valid_words:
-            current_guess = input.compare_word(user_input, solution, kb_dic)
-            guessed_words.append(current_guess)
+        guess = input.echo_str(scorewin, len(guessed_words), spacing)
+        if guess in valid_words:
+            guess_status = input.compare_word(guess, solution, kb_dic)
+            guessed_words.append((guess, guess_status))
             scorewin.refresh()
             # only refresh 'word not in list'
             # message if new input passes
             msgwin.clear()
             msgwin.refresh()
-            if current_guess[0] == solution:
+            if guess == solution:
                 out.update_kb(kbwin, kb_dic)
                 out.update_words(scorewin, guessed_words, spacing)
                 out.end_score(msgwin, win=True, result=len(guessed_words))

@@ -71,39 +71,34 @@ def echo_str(screen, start_y, spacing):
     return user_str
 
 
-def compare_word(guess, solution, kb_dic=alphabet):
-    # this loop compares the chars in 'string' and 'solution' based on index,
-    # and assigns a color to the respective index in the color array. so
-    # if string were 'weiss', and solution were 'white', this function would
-    # return something like this: ['weiss', [1,2,1,3,3]].
-    # the structure for this is [string literal, [list of ints
-    # referencing an assigned color]]. since the same letter can appear
-    # multiple times in a word, we prefer to use the index i as a key
-    # instead of a real dictionary, where repeated letters would all
-    # point to the same color regardless of location.
-    matches = guess, [0 for c in guess] # actually a list >_>
-    green_c_count = defaultdict(int) # creates keys if they don't exist
-    for i in range(len(matches[0])):
-            char = matches[0][i]
-            if char == solution[i]:
-                color = Status.MATCH
-                green_c_count[char] += 1
-            elif char in solution:
-                color = Status.MISPLACE
-            else:
-                color = Status.MISMATCH
-            matches[1][i] = color
-            # this ensures 'better' colors have priority, i.e.
-            # a previously green letter can't become yellow
-            if kb_dic[char] < color:
-                kb_dic[char] = color
-    string_c_count = Counter(guess)
-    solution_c_count = Counter(solution)
-    for k, v in green_c_count.items():
-        if v == solution_c_count[k]:
-            if string_c_count[k] > solution_c_count[k]:
-                for i in range(len(matches[0])):
-                    char = matches[0][i]
-                    if char == k and matches[1][i] == Status.MISPLACE:
-                        matches[1][i] = Status.MISMATCH
-    return matches
+def compare_word(guess:str, solution:str, kb_dic:dict):
+    # initialize values as if all letters were wrong
+    status = [Status.MISMATCH] * len(guess)
+    # compute how often each letter appears in the solution
+    solution_count = Counter(solution)
+    # ... which we will then compare to matches in our guess
+    # (defaultdic creates a key if it doesn't exist)
+    matches = defaultdict(int)
+    # compare each letter in guess and solution, and set the
+    # corresponding index to a match if they're equal
+    for index, (letter1, letter2) in enumerate(zip(guess, solution)):
+        if letter1 == letter2:
+            status[index] = Status.MATCH
+            matches[letter1] += 1
+
+    # in a second pass, set letters to a misplace if they're in
+    # the solution but at the wrond index. if they exceed the total
+    # in the solution, purposefully ignore them. that is, if the
+    # solution were 'walls', and guess 'lulls', treat the first 'l' as
+    # a mismatch since the sum of matches for that letter is satisfied
+    for index, (letter1, letter2) in enumerate(zip(guess, solution)):
+        if letter1 != letter2 and solution_count[letter1] > matches[letter1]:
+            status[index] = Status.MISPLACE
+
+    # also check if the previous status for a letter was "higher"
+    # before updating the keyboard, it may only increase
+    for letter, value in zip(guess, status):
+        if value > kb_dic[letter]:
+            kb_dic[letter] = value
+
+    return status
