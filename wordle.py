@@ -36,12 +36,12 @@ def game(stdscr, solution):
     scorewin, msgwin, kbwin = win_size_wrapper(stdscr)
 
     guessed_words = []
-    kb_dic = alphabet
+    kb_status = {letter:Status.MISMATCH for letter in alphabet}
     while len(guessed_words) < max_guesses:
-        out.update_kb(kbwin, kb_dic)
+        out.update_kb(kbwin, kb_status)
         guess = input.echo_str(scorewin, len(guessed_words), spacing)
         if guess in valid_words:
-            guess_status = input.compare_word(guess, solution, kb_dic)
+            guess_status = input.compare_word(guess, solution, kb_status)
             guessed_words.append((guess, guess_status))
             scorewin.refresh()
             # only refresh 'word not in list'
@@ -49,7 +49,7 @@ def game(stdscr, solution):
             msgwin.clear()
             msgwin.refresh()
             if guess == solution:
-                out.update_kb(kbwin, kb_dic)
+                out.update_kb(kbwin, kb_status)
                 out.update_words(scorewin, guessed_words, spacing)
                 out.end_score(msgwin, win=True, result=len(guessed_words))
                 stdscr.getkey()
@@ -57,7 +57,7 @@ def game(stdscr, solution):
         else:
             out.color_str(msgwin, 'Word not in list.', 1, 0, Status.MISMATCH)
             msgwin.refresh()
-        out.update_kb(kbwin, kb_dic)
+        out.update_kb(kbwin, kb_status)
         out.update_words(scorewin, guessed_words, spacing)
 
     out.end_score(msgwin, win=False, result=solution)

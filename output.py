@@ -33,14 +33,14 @@ def update_words(screen, guesses, spacing):
     screen.refresh()
 
 
-def update_kb(screen, kb_dic):
+def update_kb(screen, kb_status):
     screen.clear()
     y = 0
     for row in 'qwertyuio', 'asdfghjkl', '  zxcvbnm':
         x = 0
         for char in row:
             try:
-                color = kb_dic[char]
+                color = kb_status[char]
             except KeyError: # spaces make it pissy
                 color_char(screen, char, y, x)
                 x += 1

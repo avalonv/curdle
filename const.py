@@ -15,7 +15,7 @@ with open('./solution-list.txt', newline='') as file2:
 # the four horsemen of the apocalypse
 max_guesses = 6
 word_len = len(valid_words[0])
-alphabet = {letter : 0 for letter in 'abcdefghijklmnopqrstuvwxyz'}
+alphabet = 'abcdefghijklmnopqrstuvwxyz'
 daily_num = (dt.utcnow() - dt(2021, 6, 19)).days % len(solution_list)
 
 

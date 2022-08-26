@@ -1,7 +1,7 @@
 import curses
 from const import *
 from output import color_char
-from collections import Counter, defaultdict
+from collections import Counter
 
 
 def echo_str(screen, start_y, spacing):
@@ -71,14 +71,13 @@ def echo_str(screen, start_y, spacing):
     return user_str
 
 
-def compare_word(guess:str, solution:str, kb_dic:dict):
+def compare_word(guess:str, solution:str, kb_status:dict):
     # initialize values as if all letters were wrong
     status = [Status.MISMATCH] * len(guess)
     # compute how often each letter appears in the solution
     solution_count = Counter(solution)
     # ... which we will then compare to matches in our guess
-    # (defaultdic creates a key if it doesn't exist)
-    matches = defaultdict(int)
+    matches = {letter : 0 for letter in alphabet}
     # compare each letter in guess and solution, and set the
     # corresponding index to a match if they're equal
     for index, (letter1, letter2) in enumerate(zip(guess, solution)):
@@ -98,7 +97,7 @@ def compare_word(guess:str, solution:str, kb_dic:dict):
     # also check if the previous status for a letter was "higher"
     # before updating the keyboard, it may only increase
     for letter, value in zip(guess, status):
-        if value > kb_dic[letter]:
-            kb_dic[letter] = value
+        if value > kb_status[letter]:
+            kb_status[letter] = value
 
     return status
