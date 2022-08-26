@@ -5,7 +5,7 @@ import input as input
 import output as out
 import curses
 
-is_daily = False
+daily = False
 # max space between letters, actual space depends on screen size
 spacing = 3
 
@@ -23,13 +23,13 @@ def win_size_wrapper(stdscr):
     while True:
         if spacing >= 1:
             try:
-                windows = out.set_win_size(stdscr, spacing, True, is_daily)
+                win_list = out.create_wins(stdscr, spacing, True, daily)
                 break
             except curses.error:
                 spacing -= 1
         else:
             raise OverflowError
-    return windows
+    return win_list
 
 
 def game(stdscr, solution):
@@ -71,7 +71,7 @@ if __name__ == '__main__':
         arg = argv[1].rstrip().lower()
         if arg == "--nyt":
             solution = Config.DAILYWORD
-            is_daily = True
+            daily = True
         elif len(arg) == Config.WORDLEN and arg in Config.VALIDWORDS:
             solution = arg
         else:

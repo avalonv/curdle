@@ -77,7 +77,7 @@ def set_colors(inverted=False):
         curses.init_pair(Status.MISMATCH, curses.COLOR_BLACK, curses.COLOR_WHITE)
 
 
-def set_win_size(stdscr, spacing, border=True, daily=False):
+def create_wins(stdscr, spacing, border=True, daily=False):
     # a whole nightmare in the palm of your hand!
     # realistically this doesn't have to be here. it's here
     # because it's unsightly and I don't want it anywhere else
