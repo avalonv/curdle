@@ -12,7 +12,7 @@ spacing = 3
 
 def win_size_wrapper(stdscr):
     global spacing
-    set_colors()
+    out.set_colors()
     # this will catch the very useful and informative 'curses.error'
     # when foolishly attempting to create windows larger than the
     # screen (i.e. the whole terminal), and reduce the spacing
@@ -23,7 +23,7 @@ def win_size_wrapper(stdscr):
     while True:
         if spacing >= 1:
             try:
-                windows = set_win_size(stdscr, spacing, True, is_daily)
+                windows = out.set_win_size(stdscr, spacing, True, is_daily)
                 break
             except curses.error:
                 spacing -= 1
@@ -36,11 +36,11 @@ def game(stdscr, solution):
     scorewin, msgwin, kbwin = win_size_wrapper(stdscr)
 
     guessed_words = []
-    kb_status = {letter:Status.MISMATCH for letter in alphabet}
-    while len(guessed_words) < max_guesses:
+    kb_status = {letter:Status.MISMATCH for letter in Config.ALPHABET}
+    while len(guessed_words) < Config.MAXGUESSES:
         out.update_kb(kbwin, kb_status)
         guess = input.echo_str(scorewin, len(guessed_words), spacing)
-        if guess in valid_words:
+        if guess in Config.VALIDWORDS:
             guess_status = input.compare_word(guess, solution, kb_status)
             guessed_words.append((guess, guess_status))
             scorewin.refresh()
@@ -66,19 +66,17 @@ def game(stdscr, solution):
 
 
 if __name__ == '__main__':
+    solution = Config.RANDOMWORD
     if len(argv) > 1:
         arg = argv[1].rstrip().lower()
         if arg == "--nyt":
-            solution = set_nyt_word()
+            solution = Config.DAILYWORD
             is_daily = True
-        elif len(arg) == word_len and arg in valid_words:
+        elif len(arg) == Config.WORDLEN and arg in Config.VALIDWORDS:
             solution = arg
         else:
             print(f"Word not in list")
             exit(2)
-    else:
-        solution = set_random_word()
-        daily_word = 0
     try:
         exit(curses.wrapper(game, solution))
     except KeyboardInterrupt:

@@ -13,7 +13,7 @@ def echo_str(screen, start_y, spacing):
     screen.keypad(True) # process special keys as unique strings
     x = 0
     screen.move(start_y, x)
-    max_x = word_len * (spacing + 1)
+    max_x = Config.WORDLEN * (spacing + 1)
     user_str = ''
     i = 0
     # avoid not erasing characters if spacing is 0
@@ -47,8 +47,8 @@ def echo_str(screen, start_y, spacing):
                 i -= 1
                 x -= spacing + 1
                 color_char(screen, blanks, start_y, x)
-        elif key.lower() in alphabet: # ignore things like arrow keys
-            if i <word_len:
+        elif key.lower() in Config.ALPHABET: # ignore things like arrow keys
+            if i < Config.WORDLEN:
                 user_str += key
                 i += 1
                 color_char(screen, key.lower(), start_y, x)
@@ -77,7 +77,7 @@ def compare_word(guess:str, solution:str, kb_status:dict):
     # compute how often each letter appears in the solution
     solution_count = Counter(solution)
     # ... which we will then compare to matches in our guess
-    matches = {letter : 0 for letter in alphabet}
+    matches = {letter : 0 for letter in Config.ALPHABET}
     # compare each letter in guess and solution, and set the
     # corresponding index to a match if they're equal
     for index, (letter1, letter2) in enumerate(zip(guess, solution)):
