@@ -14,13 +14,13 @@ then `cd` into the new directory `cursewordle` and run:
 
 `./wordle.py`
 
-you can pass your own words as an argument, or play against the word of the day from the official NYT version of Wordle:
+you can pass your own word as an argument, or play against the official word of the day from the NYT version of Wordle:
 
 `./wordle.py --nyt`
 
 ## Configuration
 
-Currently, a handful of settings can be manually adjusted in `config.py`. I plan to expose these as command line arguments eventually.
+Currently, there are a few hardcoded settings which can be manually adjusted in `config.py`. I plan to expose these as command line arguments eventually.
 
 Any list of 5 letter words can be used, as long as `solution-list.txt` is equal to or contains a subset of `valid-inputs.txt`
 
