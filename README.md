@@ -18,9 +18,9 @@ cd cordle
 
 you can play against the word of the day from the NYT version of Wordle, or pass your own word as an argument:
 
-`./wordle.py --daily`
+`./cordle.py --daily`
 
-`./wordle.py [solution]`
+`./cordle.py [solution]`
 
 ## Configuration
 
