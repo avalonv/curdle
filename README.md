@@ -4,10 +4,9 @@
   <img src="https://user-images.githubusercontent.com/29720696/193329907-66216dad-d86d-4652-94d4-aaa6a8201ffc.png" height="300"/>
 </p>
 
-## Requirements
-Requires python 3.1 or higher.
-
 ## Installation & Usage
+Requires Python 3.1 or higher.
+
 Should not require any additional tools on \*nix systems (MacOS, Linux), simply clone this repository:
 
 ```sh
@@ -16,19 +15,23 @@ cd cordle
 ./cordle.py
 ```
 
-you can play against the word of the day from the NYT version of Wordle, or pass your own word as an argument:
+you can play against the word of the day from the NYT version of Wordle:
 
 `./cordle.py --daily`
+
+ or pass your own word as an argument:
 
 `./cordle.py [solution]`
 
 ## Configuration
 
-Currently, there are a few hardcoded options which can be manually adjusted in `config.py`.
+There are a few hardcoded options which can be manually adjusted in config.py. 
 
-Any list of 5 letter words can be used, as long as `solution-list.txt` includes a subset of `valid-inputs.txt`
+- You can, for example, customize the keyboard layout, or whether to show the solution at the end.
 
-In theory, its logic should already support words of any lenght, as long as the appropiate lists are provided, but it still requires more testing.
+- Pretty much any list of 5 letter words can be used, as long as solution-list.txt includes a subset of valid-inputs.txt.
+
+- In theory, its logic should already support words of any lenght, as long as the appropiate lists are provided, but it still requires more testing.
 
 ### Windows
 The built-in python curses module isn't supported on Windows powershell.
