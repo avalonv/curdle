@@ -1,7 +1,8 @@
 # cordle - A wordle clone in curses
 
-![image](https://user-images.githubusercontent.com/29720696/187646138-4f9b4295-5780-4409-b67a-2cda4783460a.png)
-
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/29720696/193329907-66216dad-d86d-4652-94d4-aaa6a8201ffc.png" />
+</p>
 
 ## Requirements
 Requires python 3.1 or higher.
