@@ -1,7 +1,7 @@
 # cordle - A wordle clone in curses
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/29720696/193329907-66216dad-d86d-4652-94d4-aaa6a8201ffc.png" />
+  <img src="https://user-images.githubusercontent.com/29720696/193329907-66216dad-d86d-4652-94d4-aaa6a8201ffc.png" height="300"/>
 </p>
 
 ## Requirements
