@@ -1,4 +1,4 @@
-# cursewordle - A terminal wordle clone in curses
+# cordle - A wordle clone in curses
 
 ![image](https://user-images.githubusercontent.com/29720696/187646138-4f9b4295-5780-4409-b67a-2cda4783460a.png)
 
@@ -10,27 +10,27 @@ Requires python 3.1 or higher.
 Should not require any additional tools on \*nix systems (MacOS, Linux), simply clone this repository:
 
 ```sh
-git clone https://github.com/avalonv/cursewordle
-cd cursewordle
-./wordle.py
+git clone https://github.com/avalonv/cordle
+cd cordle
+./cordle.py
 ```
 
-you can pass your own word as an argument, or play against the word of the day from the NYT version of Wordle:
+you can play against the word of the day from the NYT version of Wordle, or pass your own word as an argument:
+
+`./wordle.py --daily`
 
 `./wordle.py [solution]`
 
-`./wordle.py --nyt`
-
 ## Configuration
 
-Currently, there are a few hardcoded options which can be manually adjusted in `config.py`. I plan to expose these as command line arguments eventually.
+Currently, there are a few hardcoded options which can be manually adjusted in `config.py`.
 
 Any list of 5 letter words can be used, as long as `solution-list.txt` includes a subset of `valid-inputs.txt`
 
 In theory, its logic should already support words of any lenght, as long as the appropiate lists are provided, but it still requires more testing.
 
 ### Windows
-The built-in python curses module isn't supported on Windows.
+The built-in python curses module isn't supported on Windows powershell.
 
 Alternatives such as Uni-Curses seem to be very unreliable, but I'd be willing to try a similar alternative if it exists.
 

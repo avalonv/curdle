@@ -62,7 +62,7 @@ if __name__ == '__main__':
     daily = False
     if len(argv) > 1:
         arg = argv[1].rstrip().lower()
-        if arg == "--nyt":
+        if arg == "--daily":
             solution = Config.DAILYWORD
             daily = True
         elif len(arg) == Config.WORDLEN and arg in Config.VALIDWORDS:
