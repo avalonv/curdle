@@ -26,7 +26,7 @@ def game(stdscr, solution, daily=False):
             raise OverflowError
     scorewin, msgwin, kbwin = window_list
 
-    kb_status = {letter:Status.MISMATCH for letter in Config.ALPHABET}
+    kb_status = {letter:Status.OTHER for letter in Config.ALPHABET}
     guessed_words = []
     while len(guessed_words) < Config.MAXGUESSES:
         out.update_kb(kbwin, kb_status)
