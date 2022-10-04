@@ -1,15 +1,12 @@
 from datetime import datetime as dt
 from random import choice
 
-# this includes almost all 5 letter words, which constitutes a much
-# larger set than the one we sample solution from
-with open('./valid-inputs.txt', newline='') as file1:
-    lines = file1.readlines()
-    input_list = [w.rstrip().lower() for w in lines]
 
-with open('./solution-list.txt', newline='') as file2:
-    lines = file2.readlines()
-    solution_list = [w.rstrip().lower() for w in lines]
+class Status(int):
+    MATCH = 3
+    MISPLACE = 2
+    MISMATCH = 1
+    OTHER = 0
 
 
 class Layout(tuple):
@@ -32,24 +29,41 @@ class Config():
     BORDER = True
     # whether to print the solution after losing a game
     SHOWSOLUTION = True
-    # max space between letters, and thus the size of
-    # the interface. actual space depends on screen size
+    # max space between letters, and thus the size of the interface. actual
+    # space will vary based on screen size
     MAXSPACING = 3
     # max number of attempts before the game ends
     MAXGUESSES = 6
     # the layout of the keyboard shown on screen
     KBLAYOUT = Layout.QWERTY
+    # where to look for words. note that solutions must be a subset of guesses
+    _guesses_path = './valid-guesses.txt'
+    _solutions_path = './valid-solutions.txt'
+
     # these you probably shouldn't touch
-    VALIDWORDS = input_list
-    WORDLEN = len(VALIDWORDS[0])
-    DAILYNUM = (dt.utcnow() - dt(2021, 6, 19)).days % len(solution_list)
+    with open('./valid-guesses.txt', newline='') as f1:
+        lines = f1.readlines()
+        VALIDWORDS = [w.rstrip().lower() for w in lines]
+
+    with open('./valid-solutions.txt', newline='') as f2:
+        lines = f2.readlines()
+        VALIDSOLUTIONS = [w.rstrip().lower() for w in lines]
+    SOLUTION = choice(VALIDSOLUTIONS)
+    DAILYNUM = (dt.utcnow() - dt(2021, 6, 19)).days % len(VALIDSOLUTIONS)
     ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
-    RANDOMWORD = choice(solution_list)
-    DAILYWORD = solution_list[DAILYNUM]
+    DAILYWORD = VALIDSOLUTIONS[DAILYNUM]
+    WORDLEN = len(SOLUTION)
+    DAILY = False
 
+    @classmethod
+    def setdaily(cls):
+        cls.DAILY = True
+        cls.SOLUTION = cls.DAILYWORD
 
-class Status(int):
-    MATCH = 3
-    MISPLACE = 2
-    MISMATCH = 1
-    OTHER = 0
+    @classmethod
+    def setsolution(cls, new):
+        cls.DAILY = False
+        if new in cls.VALIDWORDS:
+            cls.SOLUTION = new
+        else:
+            raise ValueError(f"'{new}' not in {cls._guesses_path}")
