@@ -221,7 +221,7 @@ class Game():
 
     def _create_wins(self, stdscr):
         # a whole nightmare in the palm of your hand!
-        Game._set_colors(self.CONST.invert)
+        Game._set_colors(self.CONST.invertcolors)
         max_y = curses.LINES - 1
         max_x = curses.COLS - 1
         mid_x = round(max_x / 2)
@@ -250,10 +250,10 @@ class Game():
         border_start_x = start_x - self.spacing - 8
         border_end_y = kb_start_y + kb_height + 1
         border_end_x = start_x + wrds_width + 7
-        if self.CONST.border:
+        if self.CONST.drawborder:
             title = '   wordle   '
             if self.CONST.daily:
-                title = f'   wordle #{self.CONST.dailynum}   '
+                title = f'   wordle #{self.CONST.DAILYNUM}   '
             title_start_x = mid_x - round(len(title) / 2)
             # this clear() is relevant for the resizing loop, should the
             # border be drawn twice for whatever reason (happens sometimes)
@@ -272,13 +272,19 @@ class Game():
         if not inverted:
             # pair 0 is a constant and always points to the default fg/bg colors
             # related: on most systems I tested COLOR_BACK is actually grey
-            curses.init_pair(Status.MATCH, curses.COLOR_GREEN, curses.COLOR_BLACK)
-            curses.init_pair(Status.MISPLACE, curses.COLOR_YELLOW, curses.COLOR_BLACK)
-            curses.init_pair(Status.MISMATCH, curses.COLOR_WHITE, curses.COLOR_BLACK)
+            curses.init_pair(Status.MATCH,
+                             curses.COLOR_GREEN, curses.COLOR_BLACK)
+            curses.init_pair(Status.MISPLACE,
+                             curses.COLOR_YELLOW, curses.COLOR_BLACK)
+            curses.init_pair(Status.MISMATCH,
+                             curses.COLOR_WHITE, curses.COLOR_BLACK)
         else:
-            curses.init_pair(Status.MATCH, curses.COLOR_BLACK, curses.COLOR_GREEN)
-            curses.init_pair(Status.MISPLACE, curses.COLOR_BLACK, curses.COLOR_YELLOW)
-            curses.init_pair(Status.MISMATCH, curses.COLOR_BLACK, curses.COLOR_WHITE)
+            curses.init_pair(Status.MATCH,
+                             curses.COLOR_BLACK, curses.COLOR_GREEN)
+            curses.init_pair(Status.MISPLACE,
+                             curses.COLOR_BLACK, curses.COLOR_YELLOW)
+            curses.init_pair(Status.MISMATCH,
+                             curses.COLOR_BLACK, curses.COLOR_WHITE)
 
 
     @classmethod
