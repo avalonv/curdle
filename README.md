@@ -1,4 +1,4 @@
-# curdle - A terminal wordle clone in curses
+# curdle - A wordle clone in curses
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/29720696/194105329-4805f397-eea5-46c6-8268-540567ba25be.gif"/>
