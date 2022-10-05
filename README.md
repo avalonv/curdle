@@ -29,7 +29,9 @@ You can also play against the word of the day from the NYT version:
 `./curdle.py [solution]`
 
 ## Configuration
-Words to play against, and words which can be used as guesses are separate lists (with the latter being significantly larger) by default. Both are available in modules/, their contents can be made identical with `cat valid-solutions.txt > valid-guesses.txt` if preferred.
+Words to play against, and words which can be used as guesses are separate lists (with the latter being significantly larger) by default. 
+
+Both are available in modules/, their contents can be made identical with `cat valid-solutions.txt > valid-guesses.txt` if preferred.
 
 There are a few other hardcoded options which can be manually adjusted in config.py, such as the keyboard layout and whether to hide the solution at the end.
 
