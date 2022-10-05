@@ -1,4 +1,4 @@
-# cordle - A terminal wordle clone in curses
+# curdle - A terminal wordle clone in curses
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/29720696/193329907-66216dad-d86d-4652-94d4-aaa6a8201ffc.png" height="300"/>
@@ -12,20 +12,20 @@ Requires Python 3.6 or higher.
 Should not require any additional tools on \*nix systems (MacOS, Linux), simply clone this repository:
 
 ```sh
-git clone https://github.com/avalonv/cordle
-cd cordle
+git clone https://github.com/avalonv/curdle
+cd curdle
 ```
 
 ## Usage
-By default, running `./cordle.py` will pick a word at random.
+By default, running `./curdle.py` will pick a word at random.
 
 You can also play against the word of the day from the NYT version:
 
-`./cordle.py --daily`
+`./curdle.py --daily`
 
  or pass your own word as an argument:
 
-`./cordle.py [solution]`
+`./curdle.py [solution]`
 
 ## Configuration
 Words to play against, and words which can be used as guesses are separate lists (with the latter being significantly larger) by default. Both are available in modules/, their contents can be made identical with `cat valid-solutions.txt > valid-guesses.txt` if preferred.
