@@ -5,7 +5,7 @@
 </p>
 
 ## Installation & Usage
-Requires Python 3.1 or higher.
+Requires Python 3.5 or higher.
 
 Should not require any additional tools on \*nix systems (MacOS, Linux), simply clone this repository:
 
@@ -15,7 +15,7 @@ cd cordle
 ./cordle.py
 ```
 
-you can play against the word of the day from the NYT version of Wordle:
+you can play against the word of the day from the NYT version:
 
 `./cordle.py --daily`
 
@@ -34,9 +34,9 @@ There are a few hardcoded options which can be manually adjusted in config.py.
 - In theory, its logic should already support words of any lenght, as long as the appropiate lists are provided, but it still requires more testing.
 
 ### Windows
-The built-in python curses module isn't supported on Windows powershell.
+The built-in python curses module isn't supported on Windows.
 
-Alternatives such as Uni-Curses seem to be very unreliable, but I'd be willing to try a similar alternative if it exists.
+Alternatives such as Uni-Curses seem unreliable, but I'd be willing to try a similar alternative if it exists.
 
 #### TODO:
 - [X] Allow passing of arguments for what the word should be
@@ -45,6 +45,6 @@ Alternatives such as Uni-Curses seem to be very unreliable, but I'd be willing t
 
 - [X] Update word display logic to more closely match the original's when there are repeated letters
 
-- [ ] Fix poor colour contrast on some terminals
+- [ ] Fix terrible colour contrast on some terminals
 
 - [ ] Possibly also add option to print emoji summary at the end like the official game
