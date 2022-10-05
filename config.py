@@ -1,8 +1,9 @@
 from datetime import datetime as dt
 from random import choice
+from enum import IntEnum
 
 
-class Status(int):
+class Status(IntEnum):
     MATCH = 3
     MISPLACE = 2
     MISMATCH = 1
