@@ -29,6 +29,8 @@ class Config():
     BORDER = True
     # whether to print the solution after losing a game
     SHOWSOLUTION = True
+    # whether to invert colors
+    INVERT = False
     # max space between letters, and thus the size of the interface. actual
     # space will vary based on screen size
     MAXSPACING = 3

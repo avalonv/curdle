@@ -221,7 +221,7 @@ class Game():
 
     def _create_wins(self, stdscr):
         # a whole nightmare in the palm of your hand!
-        Game._set_colors()
+        Game._set_colors(self.const.INVERT)
         max_y = curses.LINES - 1
         max_x = curses.COLS - 1
         mid_x = round(max_x / 2)
