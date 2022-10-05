@@ -47,6 +47,11 @@ if __name__ == '__main__':
         dest="secret",
         action="store_true",
         help="don't show solution if player loses")
+    parser.add_argument( "--strict",
+        default=False,
+        dest="strict",
+        action="store_true",
+        help="use smaller wordlist for allowed guesses")
     # hidden options
     parser.add_argument( "--noborder",
         dest="no_border",
@@ -68,6 +73,8 @@ if __name__ == '__main__':
         config.setsolution(args.word)
     if args.size:
         config.setwidth(args.size)
+    if args.strict:
+        config.strict()
     if args.secret:
         config.showsolution = False
     if args.tries:

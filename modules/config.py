@@ -82,3 +82,11 @@ class Config():
             cls.kblayout = cls._LAYOUTS[new]
         else:
             raise ValueError(f"'{new}' not in {keys}")
+
+
+    @classmethod
+    def strict(cls):
+        if cls.solution in cls.validsolutions:
+            cls.validwords = cls.validsolutions
+        else:
+            raise ValueError(f"'{cls.solution}' not in {cls._SOLUTIONS_PATH}")
