@@ -243,7 +243,7 @@ class Game():
         kb_width = 20 + 2
         kb_height = 3
         kb_start_y = msg_start_y + msg_height
-        kb_start_x = round(mid_x - (len(max(self.CONST.kblayout, key=len)) + 1) / 2)
+        kb_start_x = round(mid_x - (len(max(self.CONST.kblayout, key=len))) / 2)
         win_kb = curses.newwin(kb_height, kb_width, kb_start_y, kb_start_x)
 
         border_start_y = 0

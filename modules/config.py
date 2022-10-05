@@ -23,9 +23,9 @@ class Layout(tuple):
             ' a s d f g h j k l',
             '   z x c v b n m')
     DVORAK = (
-            '     p y f g c r l',
-            '  a o e u i d h t n s',
-            '   q j k x b m w v z')
+            '    p y f g c r l',
+            ' a o e u i d h t n s',
+            '  q j k x b m w v z')
 
 class Config():
     # where to look for words. note that solutions must be a subset of guesses
