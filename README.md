@@ -21,6 +21,7 @@ By default, running `./curdle.py` will pick a word at random.
 
 You can also play against the word of the day from the NYT version:
 
+
 `./curdle.py --daily`
 
  or pass your own word as an argument:
