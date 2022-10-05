@@ -1,32 +1,32 @@
 import curses, curses.textpad
 from time import sleep
 from collections import Counter
-from config import Config, Status
+from .config import Config, Status
 
 
 class Game():
     def __init__(self, stdscr, config=Config):
-        self.const = config
-        self.spacing:int = self.const.MAXSPACING # rename to CHARSPACING later
+        self.CONST = config
+        self.spacing:int = self.CONST.maxspacing
         windows = self._winsize_wrapper(stdscr)
         self.window_wrds = windows[0]
         self.window_msg = windows[1]
         self.window_kb = windows[2]
         self.guessed_words = []
-        self.guessed_letters = {l:Status.OTHER for l in self.const.ALPHABET}
+        self.guessed_letters = {l:Status.OTHER for l in self.CONST.ALPHABET}
 
 
     def play(self):
         self._update_kb()
         while not self.gameover:
-            if self.readguess() == self.const.SOLUTION:
+            if self.readguess() == self.CONST.solution:
                 return self.display_victory()
         return self.display_loss()
 
 
     @property
     def gameover(self):
-        if len(self.guessed_words) + 1 > self.const.MAXGUESSES:
+        if len(self.guessed_words) + 1 > self.CONST.maxguesses:
             return True
         else:
             return False
@@ -34,7 +34,7 @@ class Game():
 
     @property
     def score(self):
-        return f'{len(self.guessed_words)}/{self.const.MAXGUESSES}'
+        return f'{len(self.guessed_words)}/{self.CONST.maxguesses}'
 
 
     def display_victory(self):
@@ -50,9 +50,9 @@ class Game():
 
     def display_loss(self):
         line1 = 'You lose!'
-        line2 = f'word: {self.const.SOLUTION}'
+        line2 = f'word: {self.CONST.solution}'
         Game._print_str(self.window_msg, line1, 0, 4, Status.MISPLACE)
-        if self.const.SHOWSOLUTION:
+        if self.CONST.showsolution:
             Game._print_str(self.window_msg, line2, 1, 3, Status.MISPLACE)
         self.window_msg.refresh()
         sleep(2)
@@ -63,7 +63,7 @@ class Game():
     def readguess(self):
         while True:
             rawstr = self._echo_read_keys().lower()
-            if rawstr in self.const.VALIDWORDS:
+            if rawstr in self.CONST.validwords:
                 current_guess = rawstr
                 # only refresh 'word not in list'
                 # message if a new input passes
@@ -98,7 +98,7 @@ class Game():
     def _update_kb(self):
         self.window_kb.clear()
         y = 0
-        for row in self.const.KBLAYOUT:
+        for row in self.CONST.kblayout:
             x = 0
             for letter in row:
                 try:
@@ -118,12 +118,12 @@ class Game():
         # initialize values as if all letters were wrong
         status = [Status.MISMATCH] * len(guess)
         # compute how often each letter appears in the solution
-        solution_count = Counter(self.const.SOLUTION)
+        solution_count = Counter(self.CONST.solution)
         # ... which we will then compare to matches in our guess
-        matches = {letter : 0 for letter in self.const.ALPHABET}
+        matches = {letter : 0 for letter in self.CONST.ALPHABET}
         # compare each letter in guess and solution, and set the
         # corresponding index to a match if they're equal
-        for index, (ltr1, ltr2) in enumerate(zip(guess, self.const.SOLUTION)):
+        for index, (ltr1, ltr2) in enumerate(zip(guess, self.CONST.solution)):
             if ltr1 == ltr2:
                 status[index] = Status.MATCH
                 matches[ltr1] += 1
@@ -132,7 +132,7 @@ class Game():
         # in the solution, purposefully ignore them. that is, if the
         # solution were 'walls', and guess 'lulls', treat the first 'l' as
         # a mismatch since the sum of matches for that letter is satisfied
-        for index, (ltr1, ltr2) in enumerate(zip(guess, self.const.SOLUTION)):
+        for index, (ltr1, ltr2) in enumerate(zip(guess, self.CONST.solution)):
             if ltr1 != ltr2 and solution_count[ltr1] > matches[ltr1]:
                 status[index] = Status.MISPLACE
         # also check if the previous status for a letter was "higher"
@@ -153,7 +153,7 @@ class Game():
         x = 0
         start_y = len(self.guessed_words)
         self.window_wrds.move(start_y, x)
-        max_x = self.const.WORDLEN * (self.spacing + 1)
+        max_x = self.CONST.wordlen * (self.spacing + 1)
         user_string = ''
         # avoid not erasing characters if spacing is 0
         if self.spacing > 0:
@@ -179,8 +179,8 @@ class Game():
                     user_string = user_string[:-1]
                     x -= self.spacing + 1
                     Game._print_char(self.window_wrds, blanks, start_y, x)
-            elif key.lower() in self.const.ALPHABET:
-                if len(user_string) < self.const.WORDLEN:
+            elif key.lower() in self.CONST.ALPHABET:
+                if len(user_string) < self.CONST.wordlen:
                     user_string += key
                     Game._print_char(self.window_wrds, key.lower(), start_y, x)
                     x += self.spacing + 1
@@ -221,13 +221,13 @@ class Game():
 
     def _create_wins(self, stdscr):
         # a whole nightmare in the palm of your hand!
-        Game._set_colors(self.const.INVERT)
+        Game._set_colors(self.CONST.invert)
         max_y = curses.LINES - 1
         max_x = curses.COLS - 1
         mid_x = round(max_x / 2)
 
-        wrds_width = self.const.WORDLEN * (self.spacing + 1)
-        wrds_height = self.const.MAXGUESSES
+        wrds_width = self.CONST.wordlen * (self.spacing + 1)
+        wrds_height = self.CONST.maxguesses
         # try to align text with the middle of the screen
         # don't ask me how it works, I genuinely have no idea
         start_x =  round(mid_x - wrds_width / 2 + (self.spacing - 1) / 2 + 1)
@@ -243,17 +243,17 @@ class Game():
         kb_width = 20 + 2
         kb_height = 3
         kb_start_y = msg_start_y + msg_height
-        kb_start_x = round(mid_x - (len(max(self.const.KBLAYOUT, key=len)) + 1) / 2)
+        kb_start_x = round(mid_x - (len(max(self.CONST.kblayout, key=len)) + 1) / 2)
         win_kb = curses.newwin(kb_height, kb_width, kb_start_y, kb_start_x)
 
         border_start_y = 0
         border_start_x = start_x - self.spacing - 8
         border_end_y = kb_start_y + kb_height + 1
         border_end_x = start_x + wrds_width + 7
-        if self.const.BORDER:
+        if self.CONST.border:
             title = '   wordle   '
-            if self.const.DAILY:
-                title = f'   wordle #{self.const.DAILYNUM}   '
+            if self.CONST.daily:
+                title = f'   wordle #{self.CONST.dailynum}   '
             title_start_x = mid_x - round(len(title) / 2)
             # this clear() is relevant for the resizing loop, should the
             # border be drawn twice for whatever reason (happens sometimes)

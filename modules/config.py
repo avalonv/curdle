@@ -1,6 +1,9 @@
 from datetime import datetime as dt
 from random import choice
 from enum import IntEnum
+import os
+
+_dirname = os.path.dirname(__file__)
 
 
 class Status(IntEnum):
@@ -24,49 +27,48 @@ class Layout(tuple):
             '  a o e u i d h t n s',
             '   q j k x b m w v z')
 
-
 class Config():
+    # where to look for words. note that solutions must be a subset of guesses
+    _guesses_path = os.path.join(_dirname, 'valid-guesses.txt')
+    _solutions_path = os.path.join(_dirname, 'valid-solutions.txt')
     # whether to draw a border & title around the screen
-    BORDER = True
+    border = True
     # whether to print the solution after losing a game
-    SHOWSOLUTION = True
+    showsolution = True
     # whether to invert colors
-    INVERT = False
+    invert = False
     # max space between letters, and thus the size of the interface. actual
     # space will vary based on screen size
-    MAXSPACING = 3
+    maxspacing = 3
     # max number of attempts before the game ends
-    MAXGUESSES = 6
+    maxguesses = 6
     # the layout of the keyboard shown on screen
-    KBLAYOUT = Layout.QWERTY
-    # where to look for words. note that solutions must be a subset of guesses
-    _guesses_path = './valid-guesses.txt'
-    _solutions_path = './valid-solutions.txt'
-
+    kblayout = Layout.QWERTY
     # these you probably shouldn't touch
-    with open('./valid-guesses.txt', newline='') as f1:
+    with open(_guesses_path, newline='') as f1:
         lines = f1.readlines()
-        VALIDWORDS = [w.rstrip().lower() for w in lines]
+        validwords = [w.rstrip().lower() for w in lines]
 
-    with open('./valid-solutions.txt', newline='') as f2:
+    with open(_solutions_path, newline='') as f2:
         lines = f2.readlines()
-        VALIDSOLUTIONS = [w.rstrip().lower() for w in lines]
-    SOLUTION = choice(VALIDSOLUTIONS)
-    DAILYNUM = (dt.utcnow() - dt(2021, 6, 19)).days % len(VALIDSOLUTIONS)
+        validsolutions = [w.rstrip().lower() for w in lines]
+    solution = choice(validsolutions)
+    dailynum = (dt.utcnow() - dt(2021, 6, 19)).days % len(validsolutions)
     ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
-    DAILYWORD = VALIDSOLUTIONS[DAILYNUM]
-    WORDLEN = len(SOLUTION)
-    DAILY = False
+    dailyword = validsolutions[dailynum]
+    wordlen = len(solution)
+    daily = False
 
     @classmethod
     def setdaily(cls):
-        cls.DAILY = True
-        cls.SOLUTION = cls.DAILYWORD
+        cls.daily = True
+        cls.solution = cls.dailyword
 
     @classmethod
     def setsolution(cls, new):
-        cls.DAILY = False
-        if new in cls.VALIDWORDS:
-            cls.SOLUTION = new
+        cls.daily = False
+        new = new.lower()
+        if new in cls.validwords:
+            cls.solution = new
         else:
             raise ValueError(f"'{new}' not in {cls._guesses_path}")

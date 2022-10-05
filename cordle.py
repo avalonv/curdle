@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-from Game import Game
-from config import Config
+from modules import Game, Config
 import curses
 
 
@@ -17,11 +16,12 @@ if __name__ == '__main__':
         arg = sys.argv[1].rstrip().lower()
         if arg == "--daily":
             config.setdaily()
-        elif len(arg) == config.WORDLEN and arg in config.VALIDWORDS:
-            Config.SOLUTION = arg
         else:
-            print(f"Word not in list")
-            sys.exit(2)
+            try:
+                config.setsolution(arg)
+            except ValueError:
+                print(f"Word not in list")
+                sys.exit(2)
     try:
         sys.exit(curses.wrapper(main, config))
     except KeyboardInterrupt:
