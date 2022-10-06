@@ -1,7 +1,7 @@
 # curdle - A wordle clone in curses
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/29720696/194105329-4805f397-eea5-46c6-8268-540567ba25be.gif"/>
+  <img src="https://user-images.githubusercontent.com/29720696/194192473-a087d0d2-7e13-4163-84fe-f99cd9d5fe35.gif"/>
 </p>
 
 What it says on the tin. I made this primarily for self-education purposes to get reacquainted with programming. Most other command-line Wordle clones are also either really simple or incapable of running on small windows. This tries to strike a balance between usability and not being super complex (or requiring external libraries).
