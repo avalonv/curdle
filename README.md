@@ -32,6 +32,7 @@ options:
   --tries num    max number of guesses
   --secret       don't show solution if player loses
   --strict       use smaller wordlist for allowed guesses
+  --simplecolor  fallback palette for terminals such as Konsole
   ```
 ## Wordlists
 Words to play against, and words which can be used as guesses are stored as separate lists (with the latter being significantly larger) by default. Both are available in modules/.
