@@ -219,7 +219,7 @@ class Game():
 
     def _create_wins(self, stdscr):
         # a whole nightmare in the palm of your hand!
-        Game._set_colors(self.CONST.invertcolors)
+        Game._set_colors()
         max_y = curses.LINES - 1
         max_x = curses.COLS - 1
         mid_x = round(max_x / 2)
@@ -264,25 +264,17 @@ class Game():
 
 
     @classmethod
-    def _set_colors(cls, inverted=False):
+    def _set_colors(cls):
         # this might be important on some terminals, not on kitty or konsole
         curses.use_default_colors()
-        if not inverted:
-            # pair 0 is a constant and always points to the default fg/bg colors
-            # related: on most systems I tested COLOR_BACK is actually grey
-            curses.init_pair(Status.MATCH,
-                             curses.COLOR_GREEN, curses.COLOR_BLACK)
-            curses.init_pair(Status.MISPLACE,
-                             curses.COLOR_YELLOW, curses.COLOR_BLACK)
-            curses.init_pair(Status.MISMATCH,
-                             curses.COLOR_WHITE, curses.COLOR_BLACK)
-        else:
-            curses.init_pair(Status.MATCH,
-                             curses.COLOR_BLACK, curses.COLOR_GREEN)
-            curses.init_pair(Status.MISPLACE,
-                             curses.COLOR_BLACK, curses.COLOR_YELLOW)
-            curses.init_pair(Status.MISMATCH,
-                             curses.COLOR_BLACK, curses.COLOR_WHITE)
+        # pair 0 is a constant and always points to the default fg/bg colors
+        # related: on most systems I tested COLOR_BACK is actually grey
+        curses.init_pair(Status.MATCH,
+                         curses.COLOR_GREEN, curses.COLOR_BLACK)
+        curses.init_pair(Status.MISPLACE,
+                         curses.COLOR_YELLOW, curses.COLOR_BLACK)
+        curses.init_pair(Status.MISMATCH,
+                         curses.COLOR_WHITE, curses.COLOR_BLACK)
 
 
     @classmethod
