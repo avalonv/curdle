@@ -219,7 +219,7 @@ class Game():
 
     def _create_wins(self, stdscr):
         # a whole nightmare in the palm of your hand!
-        Game._set_colors()
+        self._set_colors()
         max_y = curses.LINES - 1
         max_x = curses.COLS - 1
         mid_x = round(max_x / 2)
@@ -263,10 +263,12 @@ class Game():
         return win_wrds, win_msg, win_kb
 
 
-    @classmethod
-    def _set_colors(cls):
+    def _set_colors(self):
+        # note, some terminals, such as Konsole, straight up lie about being
+        # able to change colors, i'm not entirely sure why. you may want to
+        # force simplecolor in that case (or switch to a better terminal)
         curses.use_default_colors() # maps '-1' to background
-        if curses.can_change_color():
+        if curses.can_change_color() and not self.CONST.simplecolor:
             curses.init_color(1, 11, 913, 556) # green
             curses.init_pair(Status.MATCH, 1, -1)
             curses.init_color(2, 984, 729, 337) # yellow
