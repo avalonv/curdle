@@ -54,7 +54,14 @@ if __name__ == '__main__':
         help="use smaller wordlist for allowed guesses")
     # hidden options
     parser.add_argument( "--noborder",
+        default=False,
         dest="no_border",
+        action="store_true",
+        help=argparse.SUPPRESS)
+    # recommended with Konsole
+    parser.add_argument( "--simplecolor",
+        default=False,
+        dest="simplecolor",
         action="store_true",
         help=argparse.SUPPRESS)
     parser.add_argument( "--layout",
@@ -81,6 +88,8 @@ if __name__ == '__main__':
         config.maxguesses = args.tries
     if args.no_border:
         config.drawborder = False
+    if args.simplecolor:
+        config.simplecolor = True
     if args.layout:
         config.setlayout(args.layout)
 

@@ -45,7 +45,7 @@ class Config():
     wordlen = len(solution)
     showsolution = True
     drawborder = True
-    invertcolors = False
+    simplecolor = False
     maxspacing = 3
     maxguesses = 6
     kblayout = _LAYOUTS['qwerty']

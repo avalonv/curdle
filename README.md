@@ -58,6 +58,6 @@ Alternatives such as Uni-Curses seem unreliable, but I'd be willing to try a sim
 
 - [X] Expose more options as command line arguments
 
-- [ ] Fix terrible colour contrast on some terminals
+- [X] Fix terrible colour contrast on some terminals
 
 - [ ] Hard mode
