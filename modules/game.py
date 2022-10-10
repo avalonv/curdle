@@ -209,14 +209,12 @@ class Game():
         while True:
             if self.spacing >= 1:
                 try:
-                    window_list = self._create_wins(stdscr)
-                    break
+                    return self._create_wins(stdscr)
                 except curses.error:
                     self.spacing -= 1
             else:
                 # https://twitter.com/S0phie_S0pht/status/1570506344284950528
                 raise OverflowError
-        return window_list
 
 
     def _create_wins(self, stdscr):
