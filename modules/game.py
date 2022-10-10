@@ -265,16 +265,18 @@ class Game():
 
     @classmethod
     def _set_colors(cls):
-        # this might be important on some terminals, not on kitty or konsole
-        curses.use_default_colors()
-        # pair 0 is a constant and always points to the default fg/bg colors
-        # related: on most systems I tested COLOR_BACK is actually grey
-        curses.init_pair(Status.MATCH,
-                         curses.COLOR_GREEN, curses.COLOR_BLACK)
-        curses.init_pair(Status.MISPLACE,
-                         curses.COLOR_YELLOW, curses.COLOR_BLACK)
-        curses.init_pair(Status.MISMATCH,
-                         curses.COLOR_WHITE, curses.COLOR_BLACK)
+        curses.use_default_colors() # maps '-1' to background
+        if curses.can_change_color():
+            curses.init_color(1, 11, 913, 556) # green
+            curses.init_pair(Status.MATCH, 1, -1)
+            curses.init_color(2, 984, 729, 337) # yellow
+            curses.init_pair(Status.MISPLACE, 2, -1)
+            curses.init_color(3, 615, 600, 811) # gray-ish
+            curses.init_pair(Status.MISMATCH, 3, -1)
+        else:
+            curses.init_pair(Status.MATCH, curses.COLOR_GREEN, -1)
+            curses.init_pair(Status.MISPLACE, curses.COLOR_YELLOW, -1)
+            curses.init_pair(Status.MISMATCH, curses.COLOR_MAGENTA, -1)
 
 
     @classmethod
