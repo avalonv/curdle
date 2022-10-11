@@ -9,6 +9,8 @@ Wordle in curses. I made this primarily for self-education purposes to get reacq
 ## Installation
 Requires Python 3.6 or higher.
 
+An terminal which supports truecolor and modifying color values on the fly is recommended.
+
 Should not require any additional tools on \*nix systems (MacOS, Linux), simply clone this repository:
 
 ```sh
