@@ -202,19 +202,30 @@ class Game():
     def _winsize_wrapper(self, stdscr):
         # this will catch the very useful and informative 'curses.error' when
         # attempting to create windows larger than the screen (i.e. the whole
-        # terminal), and reduce the spacing between chars (and thus size of the
+        # terminal), and reduce the spacing between chars (and thus width of the
         # windows) until it fits. it will also catch other, equally important
         # errors, with equally informative names, so it's best to call
-        # create_wins directly if debugging curses itself
+        # _create_wins directly if debugging
+        v_padding = 6
+        h_padding = 18
+        if self.CONST.drawborder:
+            v_padding += 4
+            h_padding += 4
+        # https://twitter.com/S0phie_S0pht/status/1570506344284950528
+        if ((self.CONST.maxguesses + v_padding) > curses.LINES
+            or (self.CONST.wordlen + h_padding) > curses.COLS):
+            raise OverflowError
+        winlist = []
         while True:
             if self.spacing >= 1:
                 try:
-                    return self._create_wins(stdscr)
+                    winlist = self._create_wins(stdscr)
+                    break
                 except curses.error:
                     self.spacing -= 1
             else:
-                # https://twitter.com/S0phie_S0pht/status/1570506344284950528
-                raise OverflowError
+                raise ValueError("can't create windows to fit display")
+        return winlist
 
 
     def _create_wins(self, stdscr):
@@ -226,10 +237,12 @@ class Game():
 
         wrds_width = self.CONST.wordlen * (self.spacing + 1)
         wrds_height = self.CONST.maxguesses
+        start_y = 1
+        if self.CONST.drawborder:
+            start_y += 1
         # try to align text with the middle of the screen
         # don't ask me how it works, I genuinely have no idea
         start_x =  round(mid_x - wrds_width / 2 + (self.spacing - 1) / 2 + 1)
-        start_y = 2
         win_wrds = curses.newwin(wrds_height, wrds_width, start_y, start_x)
 
         msg_width = 20
